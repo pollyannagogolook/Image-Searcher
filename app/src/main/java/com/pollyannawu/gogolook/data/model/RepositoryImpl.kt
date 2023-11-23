@@ -1,4 +1,8 @@
 package com.pollyannawu.gogolook.data.model
 
-class RepositoryImpl {
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class RepositoryImpl @Inject constructor(remoteDataSource: RemoteDataSource): Repository{
 }
