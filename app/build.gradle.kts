@@ -7,6 +7,9 @@ plugins {
 
     // kapt
     id("kotlin-kapt")
+
+    // firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -76,4 +79,8 @@ dependencies {
     // hilt
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
+
+    // firebase for a/b testing
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
 }
