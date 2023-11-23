@@ -4,6 +4,9 @@ plugins {
 
     // hilt
     id("com.google.dagger.hilt.android")
+
+    // kapt
+    id("kotlin-kapt")
 }
 
 android {
