@@ -8,4 +8,6 @@ import okhttp3.OkHttpClient
 private const val HOST_NAME = "pixabay.com"
 private const val BASE_URL = "https://$HOST_NAME/api"
 
-
+internal val moshi = Moshi.Builder()
+    .addLast(KotlinJsonAdapterFactory())
+    .build()
