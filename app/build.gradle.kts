@@ -84,6 +84,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
     implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("com.google.firebase:firebase-config:21.6.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
