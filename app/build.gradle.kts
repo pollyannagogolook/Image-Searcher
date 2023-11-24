@@ -117,4 +117,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:$version_retrofit")
     implementation ("com.squareup.retrofit2:converter-moshi:$version_retrofit")
 
+
+    // okHttp
+    val version_okHttp = "4.9.1"
+    implementation("com.squareup.okhttp3:okhttp:$version_okHttp")
 }
