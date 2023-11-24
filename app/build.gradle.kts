@@ -98,4 +98,11 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
 
+    // moshi
+    // Moshi
+    val version_moshi = "1.14.0"
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:$version_moshi")
+    implementation ("com.squareup.moshi:moshi:$version_moshi")
+    implementation ("com.squareup.moshi:moshi-kotlin:$version_moshi")
+
 }
