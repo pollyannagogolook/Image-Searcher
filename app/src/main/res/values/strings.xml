@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GogoLook</string>
+    <string name="search_image">Search Image</string>
 </resources>
