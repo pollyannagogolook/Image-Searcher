@@ -1,4 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-  
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".MainActivity">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="@dimen/standard"
+            android:background="@drawable/search_bar_background"
+            android:elevation="@dimen/standard_one_forth"
+            >
+
+            <ImageView
+                android:id="@+id/search_btn"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1"
+                android:src="@drawable/search"
+                android:layout_marginVertical="@dimen/standard_half"
+                android:layout_marginLeft="@dimen/standard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+
+                />
+                <AutoCompleteTextView
+                    android:layout_marginRight="@dimen/standard"
+                    android:id="@+id/search_input"
+                    android:completionThreshold="1"
+                    android:textSize="@dimen/standard_text_size"
+                    android:completionHint="Search Image"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="@dimen/standard"
+                    android:layout_marginEnd="@dimen/standard"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/search_btn"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
