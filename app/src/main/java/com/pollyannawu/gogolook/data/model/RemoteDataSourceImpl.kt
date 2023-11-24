@@ -6,4 +6,8 @@ import javax.inject.Singleton
 
 @Singleton
 class RemoteDataSourceImpl @Inject constructor(app: App) : RemoteDataSource {
+
+    override fun getDefaultLayoutByRemoteConfig() {
+        TODO("Not yet implemented")
+    }
 }
