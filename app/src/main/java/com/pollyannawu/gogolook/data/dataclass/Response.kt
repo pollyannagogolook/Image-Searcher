@@ -1,3 +1,5 @@
+package com.pollyannawu.gogolook.data.dataclass
+
 import com.squareup.moshi.Json
 
 data class Response(
