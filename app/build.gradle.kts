@@ -99,10 +99,14 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     // moshi
-    // Moshi
     val version_moshi = "1.14.0"
     kapt("com.squareup.moshi:moshi-kotlin-codegen:$version_moshi")
     implementation ("com.squareup.moshi:moshi:$version_moshi")
     implementation ("com.squareup.moshi:moshi-kotlin:$version_moshi")
+
+    // Glide
+   val version_glide = "4.15.1"
+    implementation ("com.github.bumptech.glide:glide:$version_glide")
+    kapt ("com.github.bumptech.glide:compiler:$version_glide")
 
 }
