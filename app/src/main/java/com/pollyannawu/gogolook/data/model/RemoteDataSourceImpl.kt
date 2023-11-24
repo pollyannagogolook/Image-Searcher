@@ -1,5 +1,10 @@
 package com.pollyannawu.gogolook.data.model
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
@@ -10,12 +15,26 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteDataSourceImpl @Inject constructor(app: App) : RemoteDataSource {
+class RemoteDataSourceImpl @Inject constructor(private val app: Application) : RemoteDataSource {
     companion object{
         const val TAG = "repository"
         const val DEFAULT_LAYOUT = "default_layout"
     }
     private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+
+    // check network is available while using retrofit
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network)?: return false
+
+        return when{
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    }
 
     override fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit) {
 
@@ -33,7 +52,7 @@ class RemoteDataSourceImpl @Inject constructor(app: App) : RemoteDataSource {
             }
     }
 
-    override fun getImagesFromPixabayAPI(hitsCallback: (List<Hit>) -> Unit) {
-        TODO("Not yet implemented")
+    override fun getImagesFromPixabayAPI():Result<List<Hit>> {
+        if (! )
     }
 }
