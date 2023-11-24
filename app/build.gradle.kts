@@ -80,11 +80,10 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
     implementation("androidx.compose.material3:material3:1.1.2")
-    implementation("com.google.firebase:firebase-config:21.6.0")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -95,9 +94,11 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
-    // firebase for a/b testing
+    // firebase for remote config
+    implementation("com.google.firebase:firebase-config:21.6.0")
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
 
     // moshi
     val version_moshi = "1.14.0"
@@ -109,5 +110,11 @@ dependencies {
    val version_glide = "4.15.1"
     implementation ("com.github.bumptech.glide:glide:$version_glide")
     kapt ("com.github.bumptech.glide:compiler:$version_glide")
+
+
+    // retrofit
+    val version_retrofit = "2.9.0"
+    implementation ("com.squareup.retrofit2:retrofit:$version_retrofit")
+    implementation ("com.squareup.retrofit2:converter-moshi:$version_retrofit")
 
 }
