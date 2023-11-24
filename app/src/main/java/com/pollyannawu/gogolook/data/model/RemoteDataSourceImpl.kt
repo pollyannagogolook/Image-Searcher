@@ -72,21 +72,21 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
         if (!isNetworkAvailable()) {
             return Result.Fail(app.getString(R.string.offline_mode))
         }
-        return withContext(Dispatchers.IO + coroutineExceptionHandler){try {
+        return withContext(Dispatchers.IO + coroutineExceptionHandler) {
+            try {
+                val response = GogolookApi.retrofitService.searchImages(input)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        Result.Success(it.hits)
+                    } ?: Result.Fail(app.getString(R.string.no_data_can_be_received_from_server))
 
-            val response = GogolookApi.retrofitService.searchImages(input)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    Result.Success(it.hits)
-                } ?: Result.Fail(app.getString(R.string.no_data_can_be_received_from_server))
-
-            } else {
-                Result.Fail("Error fetching data: ${response.errorBody()?.string()}")
+                } else {
+                    Result.Fail("Error fetching data: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Result.Fail("Exception Occurred: ${e.message}")
             }
-        } catch (e: Exception) {
-            Result.Fail("Exception Occurred: ${e.message}")
         }
-            }
 
     }
 }
