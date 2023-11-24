@@ -1,5 +1,5 @@
 package com.pollyannawu.gogolook.data.model
 
 interface RemoteDataSource {
-    fun getDefaultLayoutByRemoteConfig()
+    fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit)
 }
