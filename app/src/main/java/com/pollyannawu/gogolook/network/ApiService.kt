@@ -46,3 +46,11 @@ interface ApiService {
         @Query("image_type")imageType: String = "photo"
     ): Response<ApiResponse>
 }
+
+/**
+ * A public Api object that exposes the lazy-initialized Retrofit service
+ */
+
+object GogolookApi {
+    val retrofitService: ApiService by lazy { retrofit.create(ApiService::class.java) }
+}
