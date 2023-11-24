@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -17,6 +19,13 @@ android {
     compileSdk = 33
 
     defaultConfig {
+
+        // api key in local properties
+        val properties = Properties()
+        properties.load(rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
+
+
         applicationId = "com.pollyannawu.gogolook"
         minSdk = 24
         targetSdk = 33
