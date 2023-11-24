@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.pollyannawu.gogolook.R
+import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.di.App
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,5 +31,9 @@ class RemoteDataSourceImpl @Inject constructor(app: App) : RemoteDataSource {
                     Log.i(TAG, "fetch remote config failed")
                 }
             }
+    }
+
+    override fun getImagesFromPixabayAPI(hitsCallback: (List<Hit>) -> Unit) {
+        TODO("Not yet implemented")
     }
 }
