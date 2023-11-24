@@ -102,7 +102,7 @@
                     app:layout_constraintDimensionRatio="1"
                     app:layout_constraintTop_toTopOf="@id/like_icon"
                     app:layout_constraintBottom_toBottomOf="@id/like_icon"
-                    app:layout_constraintEnd_toStartOf="@id/like_icon"
+                    app:layout_constraintEnd_toStartOf="@id/view_icon"
                     />
                 <TextView
                     android:id="@+id/view_number"
@@ -121,30 +121,29 @@
                     android:src="@drawable/view_icon"
                     app:layout_constraintTop_toTopOf="@id/like_icon"
                     app:layout_constraintBottom_toBottomOf="@id/like_icon"
-                    app:layout_constraintEnd_toStartOf="@id/download_icon"
+                    app:layout_constraintEnd_toStartOf="@id/comment_icon"
                     android:layout_marginEnd="@dimen/standard"
                     app:layout_constraintHeight_percent="0.05"
                     app:layout_constraintDimensionRatio="1"
                     />
                 <TextView
-                    android:id="@+id/collection_number"
-                    android:text="@{item.collections}"
+                    android:id="@+id/comment_number"
+                    android:text="@{item.comments}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
                     app:layout_constraintBottom_toBottomOf="@id/like_number"
-                    app:layout_constraintStart_toStartOf="@id/collection_icon"
-                    app:layout_constraintEnd_toEndOf="@id/collection_icon"
+                    app:layout_constraintStart_toStartOf="@id/comment_icon"
+                    app:layout_constraintEnd_toEndOf="@id/comment_icon"
                     />
                 <ImageView
-                    android:id="@+id/collection_icon"
+                    android:id="@+id/comment_icon"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:src="@drawable/archive_icon"
-
+                    android:src="@drawable/comment_icon"
                     app:layout_constraintTop_toTopOf="@id/like_icon"
                     app:layout_constraintBottom_toBottomOf="@id/like_icon"
-                    app:layout_constraintEnd_toStartOf="@id/view_icon"
+                    app:layout_constraintEnd_toStartOf="@id/like_icon"
                     android:layout_marginEnd="@dimen/standard"
                     app:layout_constraintHeight_percent="0.05"
                     app:layout_constraintDimensionRatio="1"
