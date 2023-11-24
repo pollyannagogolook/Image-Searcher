@@ -119,6 +119,8 @@ dependencies {
 
 
     // okHttp
-    val version_okHttp = "4.9.1"
-    implementation("com.squareup.okhttp3:okhttp:$version_okHttp")
+    val version_okhttp = "4.9.1"
+    implementation("com.squareup.okhttp3:okhttp:$version_okhttp")
+    implementation ("com.squareup.okhttp3:logging-interceptor:$version_okhttp")
+    testImplementation ("com.squareup.okhttp3:mockwebserver:$version_okhttp")
 }
