@@ -63,12 +63,17 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
 
     override suspend fun getImagesFromPixabayAPI(input: String): Result<List<Hit>> {
 
+        // CoroutineExceptionHandler for handling exceptions
+        val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Result.Fail("We cannot get image due to some network problems: $throwable")
+        }
 
         // check network connection before fetching data by retrofit
         if (!isNetworkAvailable()) {
             return Result.Fail(app.getString(R.string.offline_mode))
         }
-        return try {
+        return withContext(Dispatchers.IO + coroutineExceptionHandler){try {
+
             val response = GogolookApi.retrofitService.searchImages(input)
             if (response.isSuccessful) {
                 response.body()?.let {
@@ -81,7 +86,7 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
         } catch (e: Exception) {
             Result.Fail("Exception Occurred: ${e.message}")
         }
-
+            }
 
     }
 }
