@@ -1,6 +1,7 @@
 package com.pollyannawu.gogolook.data.model
 
 import com.pollyannawu.gogolook.data.dataclass.Hit
+import com.pollyannawu.gogolook.data.dataclass.Result
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +11,7 @@ class RepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDat
         remoteDataSource.getDefaultLayoutByRemoteConfig(defaultLayoutCallback)
     }
 
-    override fun getImagesFromPixabayAPI(hitCallbacks: (List<Hit>) -> Unit) {
-        remoteDataSource.getImagesFromPixabayAPI(hitCallbacks)
+    override suspend fun getImagesFromPixabayAPI(input: String): Result<List<Hit>> {
+        return remoteDataSource.getImagesFromPixabayAPI(input)
     }
 }

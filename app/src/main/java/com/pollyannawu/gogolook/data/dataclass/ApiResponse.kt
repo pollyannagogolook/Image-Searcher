@@ -2,7 +2,8 @@ package com.pollyannawu.gogolook.data.dataclass
 
 import com.squareup.moshi.Json
 
-data class Response(
+data class ApiResponse(
+
     val total: Int,
     val totalHits: Int,
     val hits: List<Hit>
