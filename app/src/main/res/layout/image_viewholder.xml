@@ -5,7 +5,7 @@
     <data>
 
         <variable
-            name="item"
+            name="hit"
             type="com.pollyannawu.gogolook.data.dataclass.Hit" />
     </data>
 
@@ -43,7 +43,7 @@
                     app:layout_constraintTop_toTopOf="@id/user_avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginLeft="@dimen/standard"
-                    android:text="@{item.user}"
+                    android:text="@{hit.user}"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/user_avatar"
                     />
@@ -65,7 +65,7 @@
                     android:id="@+id/like_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{item.likes}"
+                    android:text="@{hit.likes}"
                     android:layout_marginTop="@dimen/standard_half"
                     app:layout_constraintTop_toBottomOf="@id/preview_image"
                     app:layout_constraintStart_toStartOf="@id/like_icon"
@@ -83,7 +83,7 @@
                     app:layout_constraintTop_toBottomOf="@id/like_number" />
                 <TextView
                     android:id="@+id/download_number"
-                    android:text="@{item.downloads}"
+                    android:text="@{hit.downloads}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
@@ -106,7 +106,7 @@
                     />
                 <TextView
                     android:id="@+id/view_number"
-                    android:text="@{item.views}"
+                    android:text="@{hit.views}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
@@ -128,7 +128,7 @@
                     />
                 <TextView
                     android:id="@+id/comment_number"
-                    android:text="@{item.comments}"
+                    android:text="@{hit.comments}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
