@@ -127,4 +127,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:$version_okhttp")
     implementation ("com.squareup.okhttp3:logging-interceptor:$version_okhttp")
     testImplementation ("com.squareup.okhttp3:mockwebserver:$version_okhttp")
+
+    // shimmer
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
 }
