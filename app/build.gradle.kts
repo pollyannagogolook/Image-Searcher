@@ -12,6 +12,9 @@ plugins {
 
     // firebase
     id("com.google.gms.google-services")
+
+    // parcelable
+    id("kotlin-parcelize")
 }
 
 android {
