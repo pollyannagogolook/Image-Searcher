@@ -13,7 +13,7 @@ import retrofit2.http.Query
 
 
 private const val HOST_NAME = "pixabay.com"
-private const val BASE_URL = "https://$HOST_NAME/api"
+private const val BASE_URL = "https://$HOST_NAME/api/"
 private const val API_KEY = "key"
 
 internal val moshi = Moshi.Builder()
@@ -26,7 +26,6 @@ private val client = OkHttpClient.Builder()
     .addInterceptor{chain ->
         val original = chain.request()
         val url = original.url.newBuilder()
-            .addQueryParameter("key", BuildConfig.API_KEY)
             .build()
         val request = original.newBuilder().url(url).build()
         chain.proceed(request)
@@ -40,8 +39,9 @@ private val retrofit = Retrofit.Builder()
 
 
 interface ApiService {
-    @GET("/")
+    @GET(".")
     suspend fun searchImages (
+        @Query("key")apiKey: String = BuildConfig.API_KEY,
         @Query("q")input: String,
         @Query("image_type")imageType: String = "photo"
     ): Response<ApiResponse>

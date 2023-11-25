@@ -67,7 +67,7 @@
                     android:id="@+id/like_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{hit.likes}"
+                    android:text="@{String.valueOf(hit.likes)}"
                     android:layout_marginTop="@dimen/standard_half"
                     app:layout_constraintTop_toBottomOf="@id/preview_image"
                     app:layout_constraintStart_toStartOf="@id/like_icon"
@@ -85,7 +85,7 @@
                     app:layout_constraintTop_toBottomOf="@id/like_number" />
                 <TextView
                     android:id="@+id/download_number"
-                    android:text="@{hit.downloads}"
+                    android:text="@{String.valueOf(hit.downloads)}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
@@ -108,7 +108,7 @@
                     />
                 <TextView
                     android:id="@+id/view_number"
-                    android:text="@{hit.views}"
+                    android:text="@{String.valueOf(hit.views)}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
@@ -130,7 +130,7 @@
                     />
                 <TextView
                     android:id="@+id/comment_number"
-                    android:text="@{hit.comments}"
+                    android:text="@{String.valueOf(hit.comments)}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/like_number"
