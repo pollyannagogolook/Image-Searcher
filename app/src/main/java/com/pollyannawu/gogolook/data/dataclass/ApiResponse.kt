@@ -1,14 +1,18 @@
 package com.pollyannawu.gogolook.data.dataclass
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ApiResponse(
 
     val total: Int,
     val totalHits: Int,
     val hits: List<Hit>
-)
+): Parcelable
 
+@Parcelize
 data class Hit(
     val id: Int,
     val pageURL: String,
@@ -33,4 +37,4 @@ data class Hit(
     val userId: Int,
     val user: String,
     val userImageURL: String
-)
+): Parcelable

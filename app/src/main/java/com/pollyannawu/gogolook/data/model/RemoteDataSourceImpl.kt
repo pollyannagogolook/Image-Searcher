@@ -24,7 +24,7 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataSourceImpl @Inject constructor(private val app: Application) : RemoteDataSource {
     companion object {
-        const val TAG = "repository"
+        const val TAG = "remoteDataSource"
         const val DEFAULT_LAYOUT = "default_layout"
     }
 
@@ -65,6 +65,7 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
 
         // CoroutineExceptionHandler for handling exceptions
         val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Log.i(TAG, "Error fetching data: ${throwable}")
             Result.Fail("We cannot get image due to some network problems: $throwable")
         }
 
@@ -74,16 +75,19 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
         }
         return withContext(Dispatchers.IO + coroutineExceptionHandler) {
             try {
-                val response = GogolookApi.retrofitService.searchImages(input)
+                val response = GogolookApi.retrofitService.searchImages(input = input)
                 if (response.isSuccessful) {
                     response.body()?.let {
                         Result.Success(it.hits)
                     } ?: Result.Fail(app.getString(R.string.no_data_can_be_received_from_server))
 
                 } else {
+                    Log.i(TAG, "Error fetching data: ${response.errorBody()?.string()}")
                     Result.Fail("Error fetching data: ${response.errorBody()?.string()}")
+
                 }
             } catch (e: Exception) {
+                Log.i(TAG, "Error fetching data: ${e.message}")
                 Result.Fail("Exception Occurred: ${e.message}")
             }
         }
