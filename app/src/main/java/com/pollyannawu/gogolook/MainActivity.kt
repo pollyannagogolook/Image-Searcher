@@ -9,10 +9,13 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.SearchView.OnQueryTextListener
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.adapters.SearchViewBindingAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,8 +41,7 @@ class MainActivity : ComponentActivity() {
             DataBindingUtil.setContentView(this, R.layout.activity_main)
         val imageAdapter = ImageAdapter()
 
-        // record user latest input
-        var userInput = ""
+        binding.searchBar.clearFocus()
 
 
         // set layout manager after getting remote setting value
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
                 binding.imageRecyclerview.adapter = imageAdapter
 
 
+                // only when result is succeed
                 viewModel.resultList.collect{result ->
                     if (result is Result.Success){
                     imageAdapter.submitList(result.data)
@@ -68,26 +71,27 @@ class MainActivity : ComponentActivity() {
         }
 
 
+        /**
+         * watch user's input: When input changed, should query from SearchSuggestionsProvider
+         * **/
 
+        binding.searchBar.setOnQueryTextListener(object : OnQueryTextListener{
 
-        // watch user's input: When input changed, should query from SearchSuggestionsProvider
-        binding.searchInput.doAfterTextChanged {editable ->
-            userInput = editable.toString()
-        }
-
-
-
-
-        // when user click search button on soft keyboard, call viewModel function to fetch data
-        binding.searchInput.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+            // when user click search button on soft keyboard, call viewModel function to fetch data
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.searchBar.clearFocus()
                 hideKeyboard()
-                viewModel.getImagesFromPixabayAPI(userInput)
-                true
-            }else{
-                false
+                query?.let{ viewModel.getImagesFromPixabayAPI(it)}
+
+                return true
             }
-        }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                return false
+            }
+        })
+
     }
 
 
