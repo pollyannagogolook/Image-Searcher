@@ -57,14 +57,14 @@ class MainActivity : ComponentActivity() {
 
 
                 // only when result is succeed
-                viewModel.resultList.collect{result ->
-                    if (result is Result.Success){
-                    imageAdapter.submitList(result.data)
-                        Log.i(TAG, "result: ${result.succeeded}")
-                    }else{
-                        Log.i(TAG, "result: ${result.succeeded}")
-                    }
+                viewModel.succeedResultList.collect{result ->
+                    imageAdapter.submitList(result)
                 }
+
+                // when result is fail, should show error hint
+
+
+                // when result is loading, should show shimmer
             }
 
 
