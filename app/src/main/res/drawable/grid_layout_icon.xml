@@ -6,17 +6,17 @@
   <path
       android:pathData="M3.5,13.5H10.5V20.5H3.5V13.5Z"
       android:strokeAlpha="0.15"
-      android:fillColor="#000000"
+      android:fillColor="@color/primary"
       android:fillAlpha="0.15"/>
   <path
       android:pathData="M13.5,3.5H20.5V10.5H13.5V3.5Z"
       android:strokeAlpha="0.15"
-      android:fillColor="#000000"
+      android:fillColor="@color/primary"
       android:fillAlpha="0.15"/>
   <path
       android:pathData="M13.5,13.5H20.5V20.5H13.5V13.5Z"
       android:strokeAlpha="0.15"
-      android:fillColor="#000000"
+      android:fillColor="@color/primary"
       android:fillAlpha="0.15"/>
   <path
       android:pathData="M3.5,3.5H10.5V10.5H3.5V3.5Z"
