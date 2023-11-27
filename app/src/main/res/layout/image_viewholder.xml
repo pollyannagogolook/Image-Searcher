@@ -12,6 +12,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item_container"
+        android:layout_marginTop="@dimen/standard"
+        android:layout_marginHorizontal="@dimen/standard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/standard">
@@ -60,11 +62,12 @@
             <TextView
                 android:id="@+id/like_number"
                 numberText="@{hit.likes}"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_half"
-                app:layout_constraintEnd_toEndOf="@id/like_icon"
-                app:layout_constraintStart_toStartOf="@id/like_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/standard"
                 app:layout_constraintTop_toBottomOf="@id/image" />
 
             <ImageView
@@ -75,18 +78,20 @@
                 android:src="@drawable/like_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/like_number"
+                app:layout_constraintEnd_toEndOf="@id/like_number"
                 app:layout_constraintTop_toBottomOf="@id/like_number"
                 app:layout_constraintWidth_percent="0.1" />
 
             <TextView
                 android:id="@+id/download_number"
                 numberText="@{hit.downloads}"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/standard"
                 app:layout_constraintBottom_toBottomOf="@id/like_number"
-                app:layout_constraintEnd_toEndOf="@id/download_icon"
-                app:layout_constraintStart_toStartOf="@id/download_icon"
+                app:layout_constraintEnd_toStartOf="@id/view_number"
                 app:layout_constraintTop_toTopOf="@id/like_number"
 
                 />
@@ -95,55 +100,57 @@
                 android:id="@+id/download_icon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/standard"
                 android:src="@drawable/download_icon"
                 app:layout_constraintBottom_toBottomOf="@id/like_icon"
                 app:layout_constraintDimensionRatio="1"
-                app:layout_constraintEnd_toStartOf="@id/view_icon"
+                app:layout_constraintStart_toStartOf="@id/download_number"
+                app:layout_constraintEnd_toEndOf="@id/download_number"
                 app:layout_constraintTop_toTopOf="@id/like_icon"
                 app:layout_constraintWidth_percent="0.1" />
 
             <TextView
                 android:id="@+id/view_number"
                 numberText="@{hit.views}"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/standard"
                 app:layout_constraintBottom_toBottomOf="@id/like_number"
-                app:layout_constraintEnd_toEndOf="@id/view_icon"
-                app:layout_constraintStart_toStartOf="@id/view_icon"
+                app:layout_constraintEnd_toStartOf="@id/comment_number"
                 app:layout_constraintTop_toTopOf="@id/like_number" />
 
             <ImageView
                 android:id="@+id/view_icon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/standard"
                 android:src="@drawable/view_icon"
                 app:layout_constraintBottom_toBottomOf="@id/like_icon"
                 app:layout_constraintDimensionRatio="1"
-                app:layout_constraintEnd_toStartOf="@id/comment_icon"
+                app:layout_constraintEnd_toEndOf="@id/view_number"
+                app:layout_constraintStart_toStartOf="@id/view_number"
                 app:layout_constraintTop_toTopOf="@id/like_icon"
                 app:layout_constraintWidth_percent="0.1" />
 
             <TextView
                 android:id="@+id/comment_number"
                 numberText="@{hit.comments}"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/standard"
                 app:layout_constraintBottom_toBottomOf="@id/like_number"
-                app:layout_constraintEnd_toEndOf="@id/comment_icon"
-                app:layout_constraintStart_toStartOf="@id/comment_icon"
+                app:layout_constraintEnd_toStartOf="@id/like_number"
                 app:layout_constraintTop_toTopOf="@id/like_number" />
 
             <ImageView
                 android:id="@+id/comment_icon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/standard"
                 android:src="@drawable/comment_icon"
                 app:layout_constraintBottom_toBottomOf="@id/like_icon"
                 app:layout_constraintDimensionRatio="1"
-                app:layout_constraintEnd_toStartOf="@id/like_icon"
+                app:layout_constraintStart_toStartOf="@id/comment_number"
+                app:layout_constraintEnd_toEndOf="@id/comment_number"
                 app:layout_constraintTop_toTopOf="@id/like_icon"
                 app:layout_constraintWidth_percent="0.1" />
 
