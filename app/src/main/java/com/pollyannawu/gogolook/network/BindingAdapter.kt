@@ -3,6 +3,7 @@ package com.pollyannawu.gogolook.network
 import android.content.Context
 import android.util.Log
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -12,7 +13,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
 import com.pollyannawu.gogolook.R
+
 import java.util.concurrent.ExecutorService
+
 
 @BindingAdapter("imageAvatar")
 fun imageAvatar(imgView: ImageView, imgUrl: String?) {
@@ -55,6 +58,15 @@ fun imageUrl(imgView: ImageView, imgUrl: String?) {
         Log.i("fail_load_image", "${e}")
     }
 
+}
+
+@BindingAdapter("numberText")
+fun numberText(textView: TextView, number: Int){
+    if (number > 999){
+        textView.text = textView.context.getString(R.string.over_9999)
+    }else{
+        textView.text = number.toString()
+    }
 }
 
 
