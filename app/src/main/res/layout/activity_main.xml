@@ -15,10 +15,10 @@
         tools:context=".MainActivity">
         <android.widget.SearchView
             android:id="@+id/search_bar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard"
-            android:layout_marginHorizontal="@dimen/standard"
+            android:layout_marginLeft="@dimen/standard"
             app:searchIcon="@drawable/search"
             android:iconifiedByDefault="false"
             android:queryBackground="@android:color/transparent"
@@ -26,10 +26,22 @@
             android:background="@drawable/search_bar_background"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/swap_layout_btn"
 
             />
 
+        <ImageView
+            android:id="@+id/swap_layout_btn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/search_bar"
+            app:layout_constraintBottom_toBottomOf="@id/search_bar"
+            app:layout_constraintDimensionRatio="1"
+            android:padding="@dimen/standard"
+            android:src="@drawable/layout_icon"
+
+            />
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_layout"
             android:layout_width="match_parent"
