@@ -14,6 +14,28 @@ import com.bumptech.glide.request.RequestOptions
 import com.pollyannawu.gogolook.R
 import java.util.concurrent.ExecutorService
 
+@BindingAdapter("imageAvatar")
+fun imageAvatar(imgView: ImageView, imgUrl: String?) {
+    try {
+        imgUrl?.let {
+            val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+
+            Glide.with(imgView.context)
+                .load(imgUri)
+                .apply(
+                    RequestOptions()
+                        .circleCrop()
+                        .placeholder(R.drawable.gogolook)
+                )
+                .into(imgView)
+
+        }
+    } catch (e: Exception) {
+        Log.i("fail_load_image", "${e}")
+    }
+
+}
+
 @BindingAdapter("imageUrl")
 fun imageUrl(imgView: ImageView, imgUrl: String?) {
     try {
@@ -34,6 +56,8 @@ fun imageUrl(imgView: ImageView, imgUrl: String?) {
     }
 
 }
+
+
 
 @GlideModule
 class GlideAppModule: AppGlideModule() {
