@@ -12,7 +12,6 @@ class ImageAdapter : ListAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback
 
     class ImageViewHolder(private val binding: ImageViewholderBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        private val shimmerLayout = binding.shimmerLayout
 
         fun bind(hit: Hit) {
             binding.hit = hit

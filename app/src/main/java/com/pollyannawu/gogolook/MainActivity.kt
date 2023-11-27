@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView.OnQueryTextListener
@@ -24,6 +25,8 @@ import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.data.dataclass.succeeded
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -56,19 +59,34 @@ class MainActivity : ComponentActivity() {
                 binding.imageRecyclerview.adapter = imageAdapter
 
 
-                // only when result is succeed
-                viewModel.succeedResultList.collect{result ->
-                    imageAdapter.submitList(result)
-                }
-
-                // when result is fail, should show error hint
 
 
-                // when result is loading, should show shimmer
+
             }
 
 
         }
+
+        // if result is success
+        lifecycleScope.launch {
+
+            viewModel.succeedResultList.collect{ result ->
+                binding.shimmerLayout.stopShimmer()
+                imageAdapter.submitList(result)
+            }
+        }
+
+        // if result is loading
+        lifecycleScope.launch {
+            viewModel.loadingResult.collect{ isLoading ->
+                if (isLoading){
+
+                    binding.shimmerLayout.startShimmer()
+                }
+            }
+        }
+
+        // if result is error, show hint
 
 
         /**
@@ -79,6 +97,7 @@ class MainActivity : ComponentActivity() {
 
             // when user click search button on soft keyboard, call viewModel function to fetch data
             override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.shimmerLayout.visibility = View.VISIBLE
                 binding.searchBar.clearFocus()
                 hideKeyboard()
                 query?.let{ viewModel.getImagesFromPixabayAPI(it)}
