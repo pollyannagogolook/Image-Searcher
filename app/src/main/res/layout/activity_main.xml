@@ -31,6 +31,17 @@
             app:layout_constraintEnd_toStartOf="@id/swap_layout_btn"
 
             />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_history_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/search_bar"
+            app:layout_constraintEnd_toEndOf="@id/search_bar"
+            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            />
         <TextView
             android:id="@+id/search_result"
             android:layout_width="0dp"
