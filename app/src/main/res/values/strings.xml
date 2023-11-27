@@ -3,4 +3,5 @@
     <string name="search_image">Search Image</string>
     <string name="offline_mode">Offline Mode</string>
     <string name="no_data_can_be_received_from_server">No data can be received from server</string>
+    <string name="over_999">999 +</string>
 </resources>
