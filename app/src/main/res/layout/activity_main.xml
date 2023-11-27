@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.pollyannawu.gogolook.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,10 +17,10 @@
         tools:context=".MainActivity">
         <android.widget.SearchView
             android:id="@+id/search_bar"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard"
-            android:layout_marginLeft="@dimen/standard"
+            android:layout_marginHorizontal="@dimen/standard"
             app:searchIcon="@drawable/search"
             android:iconifiedByDefault="false"
             android:queryBackground="@android:color/transparent"
@@ -29,18 +31,50 @@
             app:layout_constraintEnd_toStartOf="@id/swap_layout_btn"
 
             />
-
+        <TextView
+            android:id="@+id/search_result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            android:text="Search Result"
+            android:textStyle="bold"
+            android:textSize="@dimen/standard_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="@dimen/standard"
+            />
         <ImageView
-            android:id="@+id/swap_layout_btn"
+            android:id="@+id/linear_layout_icon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toStartOf="@id/swap_layout_btn"
+            app:layout_constraintTop_toTopOf="@id/search_result"
+            app:layout_constraintBottom_toBottomOf="@id/search_result"
+            app:layout_constraintWidth_percent="0.08"
+            android:src="@drawable/horizontal_layout_icon"
+            app:layout_constraintDimensionRatio="1"
+            />
+        <ImageView
+            android:id="@+id/grid_layout_icon"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/search_bar"
-            app:layout_constraintBottom_toBottomOf="@id/search_bar"
+            app:layout_constraintTop_toTopOf="@id/search_result"
+            app:layout_constraintBottom_toBottomOf="@id/search_result"
+            app:layout_constraintWidth_percent="0.08"
+            android:src="@drawable/grid_layout_icon"
             app:layout_constraintDimensionRatio="1"
-            android:padding="@dimen/standard"
-            android:src="@drawable/layout_icon"
+            android:layout_margin="@dimen/standard"
+            />
 
+        <Switch
+            android:id="@+id/swap_layout_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toStartOf="@id/grid_layout_icon"
+            app:layout_constraintTop_toTopOf="@id/search_result"
+            app:layout_constraintBottom_toBottomOf="@id/search_result"
+            app:layout_constraintDimensionRatio="1"
+            android:padding="@dimen/standard_half"
             />
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_layout"
@@ -48,7 +82,7 @@
             android:layout_height="0dp"
             android:visibility="gone"
             android:layout_marginTop="@dimen/standard"
-            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintTop_toBottomOf="@id/search_result"
             app:layout_constraintBottom_toBottomOf="parent">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,9 +103,39 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/standard"
-            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintTop_toBottomOf="@id/search_result"
             app:layout_constraintBottom_toBottomOf="parent"
             />
+        <ImageView
+            android:id="@+id/error_hint_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_result"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_percent="0.3"
+            app:layout_constraintDimensionRatio="1"
+            android:src="@drawable/error_icon"
+            />
+        <TextView
+            android:id="@+id/error_hint_text"
+            android:text="@string/result_fail_hint"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/standard"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/error_hint_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+
+
 
 
 
