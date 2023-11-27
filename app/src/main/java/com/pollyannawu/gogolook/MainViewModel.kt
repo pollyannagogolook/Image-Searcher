@@ -1,5 +1,6 @@
 package com.pollyannawu.gogolook
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pollyannawu.gogolook.data.dataclass.Hit
@@ -18,8 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
+    companion object{
+        const val TAG = "main viewModel"
+    }
+
     private val _defaultLayout = MutableSharedFlow<String>()
     var defaultLayout: SharedFlow<String> = _defaultLayout.asSharedFlow()
+
+    private val _result = MutableSharedFlow<Result<List<Hit>>>()
+    var result: SharedFlow<Result<List<Hit>>> = _result.asSharedFlow()
 
     private val _succeedResultList = MutableSharedFlow<List<Hit>>()
     var succeedResultList: SharedFlow<List<Hit>> = _succeedResultList.asSharedFlow()
@@ -49,12 +57,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun getImagesFromPixabayAPI(input: String) {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                when(val imageResult = repository.getImagesFromPixabayAPI(input)){
-                    is Result.Success -> _succeedResultList.emit(imageResult.data)
-                    is Result.Fail -> _failResult.emit(true)
-                    is Result.Error -> _failResult.emit(true)
-                    is Result.Loading -> _loadingResult.emit(true)
-                }
+                val imageResult = repository.getImagesFromPixabayAPI(input)
+                _result.emit(imageResult)
 
             }
         }
