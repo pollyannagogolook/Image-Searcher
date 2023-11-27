@@ -63,7 +63,7 @@ fun imageUrl(imgView: ImageView, imgUrl: String?) {
 @BindingAdapter("numberText")
 fun numberText(textView: TextView, number: Int){
     if (number > 999){
-        textView.text = textView.context.getString(R.string.over_9999)
+        textView.text = textView.context.getString(R.string.over_999)
     }else{
         textView.text = number.toString()
     }
@@ -71,10 +71,3 @@ fun numberText(textView: TextView, number: Int){
 
 
 
-@GlideModule
-class GlideAppModule: AppGlideModule() {
-    override fun applyOptions(context: Context, builder: GlideBuilder) {
-        super.applyOptions(context, builder)
-        builder.apply { RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL) }
-    }
-}
