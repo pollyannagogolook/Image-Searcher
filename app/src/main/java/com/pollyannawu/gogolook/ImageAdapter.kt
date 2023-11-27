@@ -9,8 +9,11 @@ import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
 
 class ImageAdapter : ListAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback) {
+
     class ImageViewHolder(private val binding: ImageViewholderBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        private val shimmerLayout = binding.shimmerLayout
+
         fun bind(hit: Hit) {
             binding.hit = hit
             binding.executePendingBindings()
@@ -30,6 +33,7 @@ class ImageAdapter : ListAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         holder.bind(getItem(position))
+
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<Hit>() {
