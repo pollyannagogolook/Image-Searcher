@@ -75,8 +75,7 @@ class MainActivity : ComponentActivity() {
                     val searchHistoryCursorAdapter = SearchHistoryCursorAdapter(
                         cursor,
                         SearchHistoryCursorAdapter.OnClickListener { query ->
-                            performSearch(query)
-
+                            clickHistoryItem(query)
                         }
                     )
                     binding.searchHistoryRecyclerview.adapter = searchHistoryCursorAdapter
@@ -108,6 +107,7 @@ class MainActivity : ComponentActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                binding.searchHistoryRecyclerview.visibility = View.VISIBLE
                 newText?.let {
                     updateSearchHistorySuggestion(newText)
                 }
@@ -165,11 +165,21 @@ class MainActivity : ComponentActivity() {
 
     private fun performSearch(query: String) {
         viewModel.getImagesFromPixabayAPI(query)
+        binding.searchHistoryRecyclerview.visibility = View.GONE
     }
 
 
     private fun saveSearchQuery(query: String) {
         viewModel.saveSearchQuery(query)
+    }
+
+    private fun clickHistoryItem(item: String){
+        binding.searchBar.clearFocus()
+        binding.searchBar.setQuery(item, false)
+        performSearch(item)
+        hideKeyboard()
+        showLoadingUI()
+
     }
 }
 
