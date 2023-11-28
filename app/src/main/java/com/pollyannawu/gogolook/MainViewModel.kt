@@ -63,6 +63,10 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun updateSearchHistorySuggestion(query: String){
         _searchSuggestions.value = repository.updateSearchHistorySuggestion(query)
     }
+
+    fun saveSearchQuery(query: String){
+        repository.saveSearchQuery(query)
+    }
 }
 
 

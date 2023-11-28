@@ -11,4 +11,6 @@ interface Repository {
     suspend fun getImagesFromPixabayAPI(input: String): Result<List<Hit>>
 
     fun updateSearchHistorySuggestion(query: String): Cursor?
+
+    fun saveSearchQuery(query: String)
 }

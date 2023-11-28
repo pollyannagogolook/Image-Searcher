@@ -19,4 +19,8 @@ class RepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDat
     override fun updateSearchHistorySuggestion(query: String): Cursor? {
        return remoteDataSource.updateSearchHistorySuggestion(query)
     }
+
+    override fun saveSearchQuery(query: String) {
+        remoteDataSource.saveSearchQuery(query)
+    }
 }

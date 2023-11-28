@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.provider.BaseColumns
+import android.provider.SearchRecentSuggestions
 import android.util.Log
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pollyannawu.gogolook.R
@@ -105,5 +106,15 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
 
         // when get history data, submit to cursorAdapter
         return app.contentResolver.query(uri, projection, selection, selectionArgs, null)
+    }
+
+
+    override fun saveSearchQuery(query: String) {
+        val suggestions = SearchRecentSuggestions(
+            app,
+            SuggestionProvider.AUTHORITY,
+            SuggestionProvider.MODE
+        )
+        suggestions.saveRecentQuery(query, null)
     }
 }

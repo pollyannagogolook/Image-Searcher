@@ -170,12 +170,7 @@ class MainActivity : ComponentActivity() {
 
 
     private fun saveSearchQuery(query: String) {
-        val suggestions = SearchRecentSuggestions(
-            this,
-            SuggestionProvider.AUTHORITY,
-            SuggestionProvider.MODE
-        )
-        suggestions.saveRecentQuery(query, null)
+        viewModel.saveSearchQuery(query)
     }
 }
 
