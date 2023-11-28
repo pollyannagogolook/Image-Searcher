@@ -1,5 +1,6 @@
 package com.pollyannawu.gogolook
 
+import android.database.Cursor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,16 +32,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _result = MutableSharedFlow<Result<List<Hit>>>()
     var result: SharedFlow<Result<List<Hit>>> = _result.asSharedFlow()
 
-    private val _succeedResultList = MutableSharedFlow<List<Hit>>()
-    var succeedResultList: SharedFlow<List<Hit>> = _succeedResultList.asSharedFlow()
-
-    private val _failResult = MutableSharedFlow<Boolean>()
-    var failResult: SharedFlow<Boolean> = _failResult.asSharedFlow()
-
-    private val _loadingResult = MutableSharedFlow<Boolean>()
-    var loadingResult: SharedFlow<Boolean> = _loadingResult.asSharedFlow()
-
-
+    private val _searchSuggestions = MutableStateFlow<Cursor?>(null)
+    val searchSuggestions: StateFlow<Cursor?> = _searchSuggestions.asStateFlow()
 
 
 
@@ -65,4 +60,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
 
+    fun updateSearchHistorySuggestion(query: String){
+        _searchSuggestions.value = repository.updateSearchHistorySuggestion(query)
+    }
 }
+
+

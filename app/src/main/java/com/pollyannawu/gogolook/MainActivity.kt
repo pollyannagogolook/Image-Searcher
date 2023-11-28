@@ -1,46 +1,42 @@
 package com.pollyannawu.gogolook
 
+import android.app.SearchManager
 import android.content.Context
-import android.graphics.ColorSpace.Adaptation
-import android.graphics.drawable.GradientDrawable.Orientation
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.provider.BaseColumns
+import android.provider.SearchRecentSuggestions
 import android.util.Log
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.SearchView.OnQueryTextListener
+import android.widget.SimpleCursorAdapter
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.appcompat.widget.SearchView
-import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.adapters.SearchViewBindingAdapter
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.pollyannawu.gogolook.data.dataclass.Result
-import com.pollyannawu.gogolook.data.dataclass.succeeded
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
+import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
+import com.pollyannawu.gogolook.searchbar.SuggestionProvider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     companion object {
-        const val TAG = "main activity"
+        const val TAG = "mainactivity cursor"
         const val DEFAULT_LAYOUT = "linear"
         const val GRID_COUNT_SPAN = 2
     }
 
     private val viewModel: MainViewModel by viewModels()
     lateinit var binding: ActivityMainBinding
+    var lastQuery = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,18 +60,28 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.result.collect{ result ->
+            viewModel.result.collect { result ->
                 when (result) {
                     is Result.Success -> {
                         imageAdapter.submitList(result.data)
                         showSuccessUI()
                     }
+
                     is Result.Loading -> showLoadingUI()
                     is Result.Error -> showErrorUI()
                     is Result.Fail -> showErrorUI()
                 }
 
 
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.searchSuggestions.collect { cursor ->
+                cursor?.let {
+                    val searchHistoryCursorAdapter = SearchHistoryCursorAdapter(cursor)
+                    binding.searchHistoryRecyclerview.adapter = searchHistoryCursorAdapter
+                }
             }
         }
 
@@ -93,13 +99,19 @@ class MainActivity : ComponentActivity() {
                 binding.searchBar.clearFocus()
                 hideKeyboard()
                 showLoadingUI()
-                query?.let { viewModel.getImagesFromPixabayAPI(it) }
+
+                query?.let {
+                    performSearch(query)
+                    saveSearchQuery(query)
+                }
 
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-
+                newText?.let {
+                    updateSearchHistorySuggestion(newText)
+                }
                 return false
             }
         })
@@ -121,12 +133,14 @@ class MainActivity : ComponentActivity() {
         binding.errorHintImage.visibility = View.GONE
         binding.errorHintText.visibility = View.GONE
     }
+
     private fun showLoadingUI() {
         binding.shimmerLayout.startShimmer()
         binding.shimmerLayout.visibility = View.VISIBLE
         binding.errorHintImage.visibility = View.GONE
         binding.errorHintText.visibility = View.GONE
     }
+
     private fun showErrorUI() {
         binding.shimmerLayout.stopShimmer()
         binding.imageRecyclerview.visibility = View.GONE
@@ -137,15 +151,31 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
-
-
     // when user click search, should hide the soft keyboard
     private fun hideKeyboard() {
         this.currentFocus.let { view ->
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(view?.windowToken, 0)
         }
+    }
+
+    private fun updateSearchHistorySuggestion(query: String) {
+        viewModel.updateSearchHistorySuggestion(query)
+    }
+
+
+    private fun performSearch(query: String) {
+        viewModel.getImagesFromPixabayAPI(query)
+    }
+
+
+    private fun saveSearchQuery(query: String) {
+        val suggestions = SearchRecentSuggestions(
+            this,
+            SuggestionProvider.AUTHORITY,
+            SuggestionProvider.MODE
+        )
+        suggestions.saveRecentQuery(query, null)
     }
 }
 
