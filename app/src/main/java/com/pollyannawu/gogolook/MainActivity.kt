@@ -1,17 +1,11 @@
 package com.pollyannawu.gogolook
 
-import android.app.SearchManager
+
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.BaseColumns
-import android.provider.SearchRecentSuggestions
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView.OnQueryTextListener
-import android.widget.SimpleCursorAdapter
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
@@ -21,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
 import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
-import com.pollyannawu.gogolook.searchbar.SuggestionProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -79,7 +72,13 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             viewModel.searchSuggestions.collect { cursor ->
                 cursor?.let {
-                    val searchHistoryCursorAdapter = SearchHistoryCursorAdapter(cursor)
+                    val searchHistoryCursorAdapter = SearchHistoryCursorAdapter(
+                        cursor,
+                        SearchHistoryCursorAdapter.OnClickListener { query ->
+                            performSearch(query)
+
+                        }
+                    )
                     binding.searchHistoryRecyclerview.adapter = searchHistoryCursorAdapter
                 }
             }
