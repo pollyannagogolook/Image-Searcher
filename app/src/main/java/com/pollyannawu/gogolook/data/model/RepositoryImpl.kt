@@ -1,5 +1,6 @@
 package com.pollyannawu.gogolook.data.model
 
+import android.database.Cursor
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.dataclass.Result
 import javax.inject.Inject
@@ -13,5 +14,9 @@ class RepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDat
 
     override suspend fun getImagesFromPixabayAPI(input: String): Result<List<Hit>> {
         return remoteDataSource.getImagesFromPixabayAPI(input)
+    }
+
+    override fun updateSearchHistorySuggestion(query: String): Cursor? {
+       return remoteDataSource.updateSearchHistorySuggestion(query)
     }
 }

@@ -1,22 +1,22 @@
 package com.pollyannawu.gogolook.data.model
 
 import android.app.Application
+import android.app.SearchManager
 import android.content.Context
+import android.database.Cursor
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
+import android.net.Uri
+import android.provider.BaseColumns
 import android.util.Log
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.data.dataclass.Hit
-import com.pollyannawu.gogolook.data.di.App
 import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.network.GogolookApi
+import com.pollyannawu.gogolook.searchbar.SuggestionProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -92,5 +92,18 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
             }
         }
 
+    }
+
+    override fun updateSearchHistorySuggestion(query: String): Cursor? {
+        // use content provider to access query history
+        val uri = Uri.parse("content://${SuggestionProvider.AUTHORITY}/search_suggest_query")
+        val projection = arrayOf(BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1)
+        val selection = "${SearchManager.SUGGEST_COLUMN_TEXT_1} LIKE ?"
+        val selectionArgs = arrayOf("%$query%")
+
+        Log.i(TAG, "selection arg: $query")
+
+        // when get history data, submit to cursorAdapter
+        return app.contentResolver.query(uri, projection, selection, selectionArgs, null)
     }
 }
