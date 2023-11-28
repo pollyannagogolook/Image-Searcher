@@ -30,8 +30,8 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <provider
-            android:name=".SuggestionProvider"
-            android:authorities="com.pollyannawu.gogolook.SuggestionProvider"
+            android:name=".searchbar.SuggestionProvider"
+            android:authorities="com.pollyannawu.gogolook.searchbar.SuggestionProvider"
             android:exported="false" />
     </application>
 
