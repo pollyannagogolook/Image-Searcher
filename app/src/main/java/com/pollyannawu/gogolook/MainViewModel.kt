@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.dataclass.Result
+import com.pollyannawu.gogolook.data.dataclass.succeeded
 import com.pollyannawu.gogolook.data.model.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 val imageResult = repository.getImagesFromPixabayAPI(input)
+                Log.i(TAG, "result: ${imageResult}")
                 _result.emit(imageResult)
 
             }

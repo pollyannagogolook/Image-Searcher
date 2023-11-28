@@ -78,8 +78,11 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
             try {
                 val response = GogolookApi.retrofitService.searchImages(input = input)
                 if (response.isSuccessful) {
+
+                    Log.i(TAG, "${response.body()?.hits}")
                     response.body()?.let {
                         Result.Success(it.hits)
+
                     } ?: Result.Fail(app.getString(R.string.no_data_can_be_received_from_server))
 
                 } else {
@@ -102,7 +105,6 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
         val selection = "${SearchManager.SUGGEST_COLUMN_TEXT_1} LIKE ?"
         val selectionArgs = arrayOf("%$query%")
 
-        Log.i(TAG, "selection arg: $query")
 
         // when get history data, submit to cursorAdapter
         return app.contentResolver.query(uri, projection, selection, selectionArgs, null)

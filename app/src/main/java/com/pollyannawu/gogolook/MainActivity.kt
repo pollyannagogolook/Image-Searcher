@@ -3,6 +3,7 @@ package com.pollyannawu.gogolook
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView.OnQueryTextListener
@@ -62,7 +63,10 @@ class MainActivity : ComponentActivity() {
 
                     is Result.Loading -> showLoadingUI()
                     is Result.Error -> showErrorUI()
-                    is Result.Fail -> showErrorUI()
+                    is Result.Fail -> {
+                        showErrorUI()
+                        Log.i(TAG, "error: ${result}")
+                    }
                 }
 
 
@@ -131,6 +135,7 @@ class MainActivity : ComponentActivity() {
         binding.shimmerLayout.visibility = View.GONE
         binding.errorHintImage.visibility = View.GONE
         binding.errorHintText.visibility = View.GONE
+        binding.imageRecyclerview.visibility = View.VISIBLE
     }
 
     private fun showLoadingUI() {
@@ -141,11 +146,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showErrorUI() {
+
         binding.shimmerLayout.stopShimmer()
         binding.imageRecyclerview.visibility = View.GONE
         binding.shimmerLayout.visibility = View.GONE
         binding.errorHintImage.visibility = View.VISIBLE
         binding.errorHintText.visibility = View.VISIBLE
+
+        Log.i(TAG, "here is error")
 
     }
 
@@ -174,11 +182,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun clickHistoryItem(item: String){
+        showLoadingUI()
         binding.searchBar.clearFocus()
         binding.searchBar.setQuery(item, false)
         performSearch(item)
         hideKeyboard()
-        showLoadingUI()
 
     }
 }
