@@ -88,6 +88,7 @@ class MainActivity : ComponentActivity() {
                     val searchHistoryCursorAdapter = SearchHistoryCursorAdapter(
                         cursor,
                         SearchHistoryCursorAdapter.OnClickListener { query ->
+                            lastQuery = query
                             clickHistoryItem(query)
                         }
                     )
