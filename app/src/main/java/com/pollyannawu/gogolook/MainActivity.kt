@@ -39,9 +39,8 @@ class MainActivity : ComponentActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         var lastQuery = ""
-
-
         binding.searchBar.clearFocus()
+
 
         // set layout manager after getting remote setting value
         lifecycleScope.launch {
@@ -56,12 +55,12 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.result.combine(viewModel.isLinear){ result, isLinear ->
+            viewModel.result.combine(viewModel.isLinear) { result, isLinear ->
                 Pair(result, isLinear)
-            }.collect{(result, isLinear) ->
+            }.collect { (result, isLinear) ->
                 when (result) {
                     is Result.Success -> {
-                        if (result.data.isEmpty()){
+                        if (result.data.isEmpty()) {
                             showErrorUI(resources.getString(R.string.no_found, lastQuery))
                             return@collect
                         }
@@ -117,8 +116,6 @@ class MainActivity : ComponentActivity() {
                     lastQuery = query
                 }
 
-
-
                 return true
             }
 
@@ -141,8 +138,15 @@ class MainActivity : ComponentActivity() {
             } else {
                 binding.imageRecyclerview.layoutManager = LinearLayoutManager(this@MainActivity)
                 viewModel.toggleLayout()
-                
+
             }
+        }
+
+
+        // when user swipe refresh, perform search again
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = false
+            performSearch(lastQuery)
         }
 
     }
@@ -202,7 +206,7 @@ class MainActivity : ComponentActivity() {
         viewModel.saveSearchQuery(query)
     }
 
-    private fun clickHistoryItem(item: String){
+    private fun clickHistoryItem(item: String) {
         showLoadingUI()
         binding.searchBar.clearFocus()
         binding.searchBar.setQuery(item, false)

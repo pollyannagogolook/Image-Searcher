@@ -121,14 +121,21 @@
 
 
         </com.facebook.shimmer.ShimmerFrameLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/image_recyclerview"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/standard"
             app:layout_constraintTop_toBottomOf="@id/search_result"
             app:layout_constraintBottom_toBottomOf="parent"
+            >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
             />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/error_hint_lottie"
             android:layout_width="0dp"
