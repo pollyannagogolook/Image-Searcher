@@ -14,7 +14,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.dataclass.Result
-import com.pollyannawu.gogolook.network.GogolookApi
+import com.pollyannawu.gogolook.network.ApiService
 import com.pollyannawu.gogolook.searchbar.SuggestionProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteDataSourceImpl @Inject constructor(private val app: Application) : RemoteDataSource {
+class RemoteDataSourceImpl @Inject constructor(private val app: Application, private val apiService: ApiService) : RemoteDataSource {
     companion object {
         const val TAG = "remoteDataSource"
         const val DEFAULT_LAYOUT = "default_layout"
@@ -80,7 +80,7 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
         }
         return withContext(Dispatchers.IO + coroutineExceptionHandler) {
             try {
-                val response = GogolookApi.retrofitService.searchImages(input = input)
+                val response = apiService.searchImages(input = input)
                 if (response.isSuccessful) {
 
                     Log.i(TAG, "${response.body()?.hits}")

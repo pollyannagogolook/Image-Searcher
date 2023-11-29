@@ -12,31 +12,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 
-private const val HOST_NAME = "pixabay.com"
-private const val BASE_URL = "https://$HOST_NAME/api/"
-private const val API_KEY = "key"
-
-internal val moshi = Moshi.Builder()
-    .addLast(KotlinJsonAdapterFactory())
-    .build()
-
-
-// client for retroit
-private val client = OkHttpClient.Builder()
-    .addInterceptor{chain ->
-        val original = chain.request()
-        val url = original.url.newBuilder()
-            .build()
-        val request = original.newBuilder().url(url).build()
-        chain.proceed(request)
-    }.build()
-
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .baseUrl(BASE_URL)
-    .client(client)
-    .build()
-
 
 interface ApiService {
     @GET(".")
@@ -51,6 +26,3 @@ interface ApiService {
  * A public Api object that exposes the lazy-initialized Retrofit service
  */
 
-object GogolookApi {
-    val retrofitService: ApiService by lazy { retrofit.create(ApiService::class.java) }
-}
