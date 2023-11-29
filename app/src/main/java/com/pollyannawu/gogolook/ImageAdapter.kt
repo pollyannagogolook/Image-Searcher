@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
+import kotlinx.coroutines.flow.SharingCommand
 
 class ImageAdapter(private val isLinear: Boolean) :
     ListAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback) {
@@ -39,14 +40,36 @@ class ImageAdapter(private val isLinear: Boolean) :
         private fun centerItems(commentView: View, likeView: View) {
 
             val constraintLayout = commentView.parent as ConstraintLayout
+
+            // set comment and like margin as 0
+            val commentLayoutParams = commentView.layoutParams as ConstraintLayout.LayoutParams
+            commentLayoutParams.marginEnd = 0
+
+            val likeLayoutParams = likeView.layoutParams as ConstraintLayout.LayoutParams
+            likeLayoutParams.marginEnd = 0
+
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(constraintLayout)
 
+
+            // constraint to start and end of parent
             constraintSet.connect(
                 commentView.id, ConstraintSet.START,
                 ConstraintSet.PARENT_ID, ConstraintSet.START
             )
+            constraintSet.connect(
+                likeView.id, ConstraintSet.START,
+                commentView.id, ConstraintSet.END
+            )
+
+
+            // constraint to start and end of each other
+            constraintSet.connect(
+                commentView.id, ConstraintSet.END,
+                likeView.id, ConstraintSet.START
+            )
+
             constraintSet.connect(
                 likeView.id, ConstraintSet.END,
                 ConstraintSet.PARENT_ID, ConstraintSet.END
