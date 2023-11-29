@@ -59,7 +59,9 @@ fun imageUrl(imgView: ImageView, imgUrl: String?) {
 fun numberText(textView: TextView, number: Int){
     textView.setTextColor(textView.context.getColor(R.color.primary))
     if (number > 999){
-        textView.text = textView.context.getString(R.string.over_999)
+        val quotient = number / 1000
+        val reminders = (number % 1000) / 100
+        textView.text = textView.context.getString(R.string.k_unit, quotient, reminders)
     }else{
         textView.text = number.toString()
     }
