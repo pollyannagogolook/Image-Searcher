@@ -130,4 +130,8 @@ dependencies {
 
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
+
+    // lottie
+    val lottieVersion = "3.4.0"
+    implementation ("com.airbnb.android:lottie:$lottieVersion")
 }
