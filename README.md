@@ -1,5 +1,6 @@
 # gogolook
 for Android homework before the first interview at Gogolook.
+Click this url to experience My App: https://drive.google.com/file/d/1dgWahiqun5wOV5N_DMfeXVYIb6CDXnyZ/view?usp=sharing
 
 This app allows users to search for images. When users enter the app, 
 they will see all images, displayed in the default layout configured
