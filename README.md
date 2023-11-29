@@ -21,11 +21,13 @@ linear and grid layouts by toggling a switch button.
 * SearchView
 * Remote Config by Firebase
 * SearchSuggestionProvider
+* Hilt
 * Coroutine Flow
 * Jetpack Component
 * Retrofit
 * Moshi
 * Glide
+  
 
 ## Installation
 * Get the Project
