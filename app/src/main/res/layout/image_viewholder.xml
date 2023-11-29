@@ -89,9 +89,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/standard"
-                app:layout_constraintEnd_toStartOf="@id/view_number"
                 app:layout_constraintBottom_toBottomOf="@id/like_number"
                android:layout_marginStart="@dimen/standard"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/like_number"
 
                 />
@@ -115,6 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/standard"
+                app:layout_constraintStart_toEndOf="@id/download_number"
                 app:layout_constraintBottom_toBottomOf="@id/like_number"
                 app:layout_constraintEnd_toStartOf="@id/comment_number"
                 app:layout_constraintTop_toTopOf="@id/like_number" />
@@ -138,6 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/standard"
+                app:layout_constraintStart_toEndOf="@id/view_number"
                 app:layout_constraintBottom_toBottomOf="@id/like_number"
                 app:layout_constraintEnd_toStartOf="@id/like_number"
                 app:layout_constraintTop_toTopOf="@id/like_number" />
