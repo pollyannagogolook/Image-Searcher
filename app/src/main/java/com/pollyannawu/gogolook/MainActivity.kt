@@ -62,6 +62,10 @@ class MainActivity : ComponentActivity() {
             }.collect{(result, isLinear) ->
                 when (result) {
                     is Result.Success -> {
+                        if (result.data.isEmpty()){
+
+                            return@collect
+                        }
                         imageAdapter = ImageAdapter(isLinear)
                         binding.imageRecyclerview.adapter = imageAdapter
                         imageAdapter?.submitList(result.data)
@@ -144,16 +148,16 @@ class MainActivity : ComponentActivity() {
     private fun showSuccessUI() {
         binding.shimmerLayout.stopShimmer()
         binding.shimmerLayout.visibility = View.GONE
-        binding.errorHintImage.visibility = View.GONE
         binding.errorHintText.visibility = View.GONE
+        binding.errorHintLottie.visibility = View.GONE
         binding.imageRecyclerview.visibility = View.VISIBLE
     }
 
     private fun showLoadingUI() {
         binding.shimmerLayout.startShimmer()
         binding.shimmerLayout.visibility = View.VISIBLE
-        binding.errorHintImage.visibility = View.GONE
         binding.errorHintText.visibility = View.GONE
+        binding.errorHintLottie.visibility = View.GONE
     }
 
     private fun showErrorUI() {
@@ -161,8 +165,9 @@ class MainActivity : ComponentActivity() {
         binding.shimmerLayout.stopShimmer()
         binding.imageRecyclerview.visibility = View.GONE
         binding.shimmerLayout.visibility = View.GONE
-        binding.errorHintImage.visibility = View.VISIBLE
         binding.errorHintText.visibility = View.VISIBLE
+        binding.errorHintLottie.playAnimation()
+        binding.errorHintLottie.visibility = View.VISIBLE
 
     }
 
