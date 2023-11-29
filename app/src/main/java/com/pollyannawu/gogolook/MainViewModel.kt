@@ -40,13 +40,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
 
-    init {
-        getDefaultLayoutByRemoteConfig()
-        loadAllImage()
-    }
 
 
-    private fun loadAllImage(){
+    fun loadAllImage(){
         viewModelScope.launch {
             val imageResult = repository.getAllImages()
             withContext(Dispatchers.Main){
@@ -55,7 +51,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    private fun getDefaultLayoutByRemoteConfig() {
+    fun getDefaultLayoutByRemoteConfig() {
         repository.getDefaultLayoutByRemoteConfig { layout ->
             viewModelScope.launch {
                 _defaultLayout.emit(layout)

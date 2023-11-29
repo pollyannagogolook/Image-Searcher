@@ -19,6 +19,7 @@ import com.pollyannawu.gogolook.databinding.ActivityMainBinding
 import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
 import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -33,13 +34,14 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private var imageAdapter: ImageAdapter? = null
+    private var lastQuery = ""
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        var lastQuery = ""
-        binding.searchBar.clearFocus()
+
+        init()
 
 
         // set layout manager after getting remote setting value
@@ -149,6 +151,12 @@ class MainActivity : ComponentActivity() {
             performSearch(lastQuery)
         }
 
+    }
+
+    private fun init(){
+        showLoadingUI()
+        viewModel.getDefaultLayoutByRemoteConfig()
+        viewModel.loadAllImage()
     }
 
     // ui state to different result type
