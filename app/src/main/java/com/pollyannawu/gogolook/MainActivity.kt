@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -15,8 +16,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
+import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
 import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -29,13 +32,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private val viewModel: MainViewModel by viewModels()
+    private var imageAdapter: ImageAdapter? = null
     lateinit var binding: ActivityMainBinding
-    var lastQuery = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val imageAdapter = ImageAdapter()
+
+
 
         binding.searchBar.clearFocus()
 
@@ -49,15 +53,18 @@ class MainActivity : ComponentActivity() {
                     binding.imageRecyclerview.layoutManager =
                         GridLayoutManager(this@MainActivity, GRID_COUNT_SPAN)
                 }
-                binding.imageRecyclerview.adapter = imageAdapter
             }
         }
 
         lifecycleScope.launch {
-            viewModel.result.collect { result ->
+            viewModel.result.combine(viewModel.isLinear){ result, isLinear ->
+                Pair(result, isLinear)
+            }.collect{(result, isLinear) ->
                 when (result) {
                     is Result.Success -> {
-                        imageAdapter.submitList(result.data)
+                        imageAdapter = ImageAdapter(isLinear)
+                        binding.imageRecyclerview.adapter = imageAdapter
+                        imageAdapter?.submitList(result.data)
                         showSuccessUI()
                     }
 
@@ -65,10 +72,8 @@ class MainActivity : ComponentActivity() {
                     is Result.Error -> showErrorUI()
                     is Result.Fail -> {
                         showErrorUI()
-                        Log.i(TAG, "error: ${result}")
                     }
                 }
-
 
             }
         }
@@ -123,13 +128,19 @@ class MainActivity : ComponentActivity() {
             if (isChecked) {
                 binding.imageRecyclerview.layoutManager =
                     GridLayoutManager(this@MainActivity, GRID_COUNT_SPAN)
+                viewModel.toggleLayout()
+
+
             } else {
                 binding.imageRecyclerview.layoutManager = LinearLayoutManager(this@MainActivity)
+                viewModel.toggleLayout()
+                
             }
         }
 
     }
 
+    // ui state to different result type
     private fun showSuccessUI() {
         binding.shimmerLayout.stopShimmer()
         binding.shimmerLayout.visibility = View.GONE
@@ -152,8 +163,6 @@ class MainActivity : ComponentActivity() {
         binding.shimmerLayout.visibility = View.GONE
         binding.errorHintImage.visibility = View.VISIBLE
         binding.errorHintText.visibility = View.VISIBLE
-
-        Log.i(TAG, "here is error")
 
     }
 
@@ -187,7 +196,6 @@ class MainActivity : ComponentActivity() {
         binding.searchBar.setQuery(item, false)
         performSearch(item)
         hideKeyboard()
-
     }
 }
 
