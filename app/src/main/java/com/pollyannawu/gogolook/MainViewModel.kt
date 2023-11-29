@@ -36,6 +36,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _searchSuggestions = MutableStateFlow<Cursor?>(null)
     val searchSuggestions: StateFlow<Cursor?> = _searchSuggestions.asStateFlow()
 
+    private val _isLinear = MutableStateFlow<Boolean>(true)
+    val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
 
     init {
@@ -68,6 +70,10 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun saveSearchQuery(query: String){
         repository.saveSearchQuery(query)
+    }
+
+    fun toggleLayout(){
+       _isLinear.value = !_isLinear.value
     }
 }
 
