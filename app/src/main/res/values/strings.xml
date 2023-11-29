@@ -5,4 +5,5 @@
     <string name="no_data_can_be_received_from_server">No data can be received from server</string>
     <string name="result_fail_hint">Search failed. \nPlease check your connection and try again.</string>
     <string name="k_unit">%1$s.%2$sk</string>
+    <string name="no_found">Sorry, there is no result about \n \"%1$s\"</string>
 </resources>

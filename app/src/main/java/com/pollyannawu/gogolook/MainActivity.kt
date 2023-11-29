@@ -38,11 +38,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
+        var lastQuery = ""
 
 
         binding.searchBar.clearFocus()
-
 
         // set layout manager after getting remote setting value
         lifecycleScope.launch {
@@ -63,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 when (result) {
                     is Result.Success -> {
                         if (result.data.isEmpty()){
-
+                            showErrorUI(resources.getString(R.string.no_found, lastQuery))
                             return@collect
                         }
                         imageAdapter = ImageAdapter(isLinear)
@@ -73,9 +72,9 @@ class MainActivity : ComponentActivity() {
                     }
 
                     is Result.Loading -> showLoadingUI()
-                    is Result.Error -> showErrorUI()
+                    is Result.Error -> showErrorUI(resources.getString(R.string.result_fail_hint))
                     is Result.Fail -> {
-                        showErrorUI()
+                        showErrorUI(resources.getString(R.string.result_fail_hint))
                     }
                 }
 
@@ -111,10 +110,14 @@ class MainActivity : ComponentActivity() {
                 hideKeyboard()
                 showLoadingUI()
 
+
                 query?.let {
                     performSearch(query)
                     saveSearchQuery(query)
+                    lastQuery = query
                 }
+
+
 
                 return true
             }
@@ -160,14 +163,18 @@ class MainActivity : ComponentActivity() {
         binding.errorHintLottie.visibility = View.GONE
     }
 
-    private fun showErrorUI() {
+    private fun showErrorUI(content: String) {
 
         binding.shimmerLayout.stopShimmer()
         binding.imageRecyclerview.visibility = View.GONE
         binding.shimmerLayout.visibility = View.GONE
-        binding.errorHintText.visibility = View.VISIBLE
-        binding.errorHintLottie.playAnimation()
+
         binding.errorHintLottie.visibility = View.VISIBLE
+
+
+        binding.errorHintText.visibility = View.VISIBLE
+        binding.errorHintText.text = content
+        binding.errorHintLottie.playAnimation()
 
     }
 
