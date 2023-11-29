@@ -42,6 +42,17 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     init {
         getDefaultLayoutByRemoteConfig()
+        loadAllImage()
+    }
+
+
+    private fun loadAllImage(){
+        viewModelScope.launch {
+            val imageResult = repository.getAllImages()
+            withContext(Dispatchers.Main){
+                _result.emit(imageResult)
+            }
+        }
     }
 
     private fun getDefaultLayoutByRemoteConfig() {
@@ -54,11 +65,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun getImagesFromPixabayAPI(input: String) {
         viewModelScope.launch {
+            val imageResult = repository.getImagesFromPixabayAPI(input)
             withContext(Dispatchers.Main) {
-                val imageResult = repository.getImagesFromPixabayAPI(input)
-                Log.i(TAG, "result: ${imageResult}")
                 _result.emit(imageResult)
-
             }
         }
     }

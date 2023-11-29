@@ -8,6 +8,10 @@ import javax.inject.Singleton
 
 @Singleton
 class RepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource): Repository{
+    override suspend fun getAllImages(): Result<List<Hit>> {
+        return remoteDataSource.getAllImages()
+    }
+
     override fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit) {
         remoteDataSource.getDefaultLayoutByRemoteConfig(defaultLayoutCallback)
     }

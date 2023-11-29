@@ -46,6 +46,10 @@ class RemoteDataSourceImpl @Inject constructor(private val app: Application) : R
         }
     }
 
+    override suspend fun getAllImages(): Result<List<Hit>> {
+        return getImagesFromPixabayAPI()
+    }
+
     override fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit) {
 
         firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
