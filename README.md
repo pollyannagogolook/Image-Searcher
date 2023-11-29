@@ -1,4 +1,7 @@
 # gogolook
+![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white)
+![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+
 for Android homework before the first interview at Gogolook.
 Click this url to experience My App: https://drive.google.com/file/d/1dgWahiqun5wOV5N_DMfeXVYIb6CDXnyZ/view?usp=sharing
 
@@ -39,9 +42,12 @@ linear and grid layouts by toggling a switch button.
 3. Create a variable named as API_KEY in local.properties
 
 ## Contacts
+![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)
+![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)
+![Medium](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)
 
 For any comments or suggestions, please feel free to reach out to me via the following channels:
 
-Gmail: pinyunwuu@gmail.com
-linkedin: https://www.linkedin.com/in/pin-yun-wu-1aab06231/
-Medium: https://medium.com/@androidpollyanna
+* Gmail: pinyunwuu@gmail.com
+* linkedin: https://www.linkedin.com/in/pin-yun-wu-1aab06231/
+* Medium: https://medium.com/@androidpollyanna
