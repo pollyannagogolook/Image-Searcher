@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="hit"
             type="com.pollyannawu.gogolook.data.dataclass.Hit" />
@@ -37,7 +36,7 @@
                 android:id="@+id/user_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/standard"
+                android:layout_marginStart="@dimen/standard"
                 android:text="@{hit.user}"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/user_avatar"
@@ -67,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_half"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="@dimen/standard"
+               android:layout_marginEnd="@dimen/standard"
                 app:layout_constraintTop_toBottomOf="@id/image" />
 
             <ImageView
@@ -90,8 +89,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/standard"
-                app:layout_constraintBottom_toBottomOf="@id/like_number"
                 app:layout_constraintEnd_toStartOf="@id/view_number"
+                app:layout_constraintBottom_toBottomOf="@id/like_number"
+               android:layout_marginStart="@dimen/standard"
                 app:layout_constraintTop_toTopOf="@id/like_number"
 
                 />
