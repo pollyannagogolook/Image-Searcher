@@ -129,19 +129,22 @@
             app:layout_constraintTop_toBottomOf="@id/search_result"
             app:layout_constraintBottom_toBottomOf="parent"
             />
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/error_hint_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_result"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintWidth_percent="0.3"
             app:layout_constraintDimensionRatio="1"
-            android:src="@drawable/error_icon"
+            app:lottie_rawRes="@raw/empty_lottie"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="true"
             />
+
+
         <TextView
             android:id="@+id/error_hint_text"
             android:text="@string/result_fail_hint"
