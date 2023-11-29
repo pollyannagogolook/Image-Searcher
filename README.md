@@ -8,8 +8,9 @@ preferred images. The app records users' search history using the
 SearchRecentSuggestionsProvider. Additionally, users can switch between
 linear and grid layouts by toggling a switch button.
 
+![gogo](https://github.com/pollyannaanalytics/gogolook/assets/114213570/f3cd0547-e8c0-48df-ad4c-e17d44cabb17)
 
-![gogolook_demo](https://github.com/pollyannaanalytics/gogolook/assets/114213570/ebb84ec8-79a7-4324-8363-556e73f6c8dd)
+
 
 
 ## Skills
