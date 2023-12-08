@@ -1,8 +1,7 @@
-# gogolook
+# Image - Searcher
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 
-for Android homework before the first interview at Gogolook.
 Click this url to experience My App: https://drive.google.com/file/d/1dgWahiqun5wOV5N_DMfeXVYIb6CDXnyZ/view?usp=sharing
 
 This app allows users to search for images. When users enter the app, 
