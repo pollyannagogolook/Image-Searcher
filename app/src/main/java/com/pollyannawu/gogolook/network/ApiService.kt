@@ -20,6 +20,7 @@ interface ApiService {
         @Query("q")input: String,
         @Query("image_type")imageType: String = "photo",
         @Query("page")page: Int,
+        @Query("per_page")perPage: Int
     ): Response<ApiResponse>
 }
 
