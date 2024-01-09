@@ -55,7 +55,7 @@ android {
         jvmTarget = "17"
     }
 
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
         viewBinding = true
         buildConfig = true
@@ -77,7 +77,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.5.0")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation ("androidx.fragment:fragment-ktx:1.3.2")
+    implementation("androidx.fragment:fragment-ktx:1.3.2")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
@@ -105,33 +105,33 @@ dependencies {
     // moshi
     val version_moshi = "1.14.0"
     kapt("com.squareup.moshi:moshi-kotlin-codegen:$version_moshi")
-    implementation ("com.squareup.moshi:moshi:$version_moshi")
-    implementation ("com.squareup.moshi:moshi-kotlin:$version_moshi")
+    implementation("com.squareup.moshi:moshi:$version_moshi")
+    implementation("com.squareup.moshi:moshi-kotlin:$version_moshi")
 
     // Glide
-   val version_glide = "4.15.1"
-    implementation ("com.github.bumptech.glide:glide:$version_glide")
-    kapt ("com.github.bumptech.glide:compiler:$version_glide")
+    val version_glide = "4.15.1"
+    implementation("com.github.bumptech.glide:glide:$version_glide")
+    kapt("com.github.bumptech.glide:compiler:$version_glide")
 
 
     // retrofit
     val version_retrofit = "2.9.0"
-    implementation ("com.squareup.retrofit2:retrofit:$version_retrofit")
-    implementation ("com.squareup.retrofit2:converter-moshi:$version_retrofit")
+    implementation("com.squareup.retrofit2:retrofit:$version_retrofit")
+    implementation("com.squareup.retrofit2:converter-moshi:$version_retrofit")
 
 
     // okHttp
     val version_okhttp = "4.9.1"
     implementation("com.squareup.okhttp3:okhttp:$version_okhttp")
-    implementation ("com.squareup.okhttp3:logging-interceptor:$version_okhttp")
-    testImplementation ("com.squareup.okhttp3:mockwebserver:$version_okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor:$version_okhttp")
+    testImplementation("com.squareup.okhttp3:mockwebserver:$version_okhttp")
 
     // shimmer
-    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     // lottie
     val lottieVersion = "3.4.0"
-    implementation ("com.airbnb.android:lottie:$lottieVersion")
+    implementation("com.airbnb.android:lottie:$lottieVersion")
 }
 
 fun getPixabayAccess(): String? {
