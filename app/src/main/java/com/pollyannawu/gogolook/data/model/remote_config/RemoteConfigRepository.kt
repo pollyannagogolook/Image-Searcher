@@ -1,5 +1,5 @@
 package com.pollyannawu.gogolook.data.model.remote_config
 
-class RemoteConfig {
-    fun getDefaultLayout(){}
+class RemoteConfigRepository {
+    fun getDefaultLayout(defaultLayoutCallback: (String) -> Unit){}
 }

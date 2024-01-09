@@ -28,8 +28,8 @@ class ImagePagingSource @Inject constructor(
         return try {
             val response = service.searchImages(
                 input = query,
-                page = page,
-                perPage = params.loadSize
+                page = STARTING_PAGE_INDEX,
+                per_page = NETWORK_PAGE_SIZE
             )
 
             val photos = response.body()

@@ -18,11 +18,16 @@ class ImageRepository @Inject constructor(private val service: ApiService){
     fun getImageBySearch(input: String): Flow<PagingData<Hit>>{
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = NETWORK_PAGE_SIZE),
-            pagingSourceFactory = { ImagePagingSource(service, query = input) }
+            pagingSourceFactory = { ImagePagingSource(
+                service,
+                query = input
+
+            ) }
         ).flow
     }
 
     companion object{
         private const val NETWORK_PAGE_SIZE = 25
+        private const val STARTING_PAGE_INDEX = 1
     }
 }
