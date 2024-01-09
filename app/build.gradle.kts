@@ -23,11 +23,8 @@ android {
 
     defaultConfig {
 
-        // api key in local properties
-        val properties = Properties()
-        properties.load(rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
-
+        // get api key in local properties
+        buildConfigField("String", "API_KEY", "\"${getPixabayAccess()}\"")
 
         applicationId = "com.pollyannawu.gogolook"
         minSdk = 24
@@ -87,6 +84,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
     implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.paging:paging-common-android:3.3.0-alpha02")
 
 
     testImplementation("junit:junit:4.13.2")
@@ -134,4 +132,8 @@ dependencies {
     // lottie
     val lottieVersion = "3.4.0"
     implementation ("com.airbnb.android:lottie:$lottieVersion")
+}
+
+fun getPixabayAccess(): String? {
+    return project.findProperty("API_KEY") as? String
 }
