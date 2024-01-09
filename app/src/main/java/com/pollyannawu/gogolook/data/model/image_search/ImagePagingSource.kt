@@ -14,7 +14,7 @@ import javax.inject.Singleton
  * Thus we need to inject ApiService and query to the constructor.
  * **/
 @Singleton
-class ImageSearchPagingSource @Inject constructor(
+class ImagePagingSource @Inject constructor(
     private val service: ApiService,
     private val query: String
 ) : PagingSource<Int, Hit>() {
