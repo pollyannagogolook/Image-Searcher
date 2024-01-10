@@ -25,14 +25,14 @@ class RepositoryImpl @Inject constructor(
         return imageRepository.getImageBySearch(query)
     }
 
-    override fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit) {
-        remoteConfigRepository.getDefaultLayout(defaultLayoutCallback)
+    override fun getDefaultLayoutByRemoteConfig(key: String, fallback: String) {
+        remoteConfigRepository.getDefaultLayout(key, fallback)
     }
 
 
 
-    override fun updateSearchHistorySuggestion(query: String){
-        searchHistoryRepository.updateSearchHistorySuggestion(query)
+    override fun updateSearchHistorySuggestion(query: String): Cursor?{
+        return searchHistoryRepository.updateSearchHistorySuggestion(query)
     }
 
     override fun saveSearchQuery(query: String) {

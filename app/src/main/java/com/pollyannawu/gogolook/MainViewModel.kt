@@ -1,23 +1,20 @@
 package com.pollyannawu.gogolook
 
 import android.database.Cursor
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.pollyannawu.gogolook.data.dataclass.Hit
-import com.pollyannawu.gogolook.data.dataclass.Result
-import com.pollyannawu.gogolook.data.dataclass.succeeded
 import com.pollyannawu.gogolook.data.model.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,16 +22,23 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     companion object{
         const val TAG = "main viewModel"
+        const val DEFAULT_LAYOUT_KEY = "default_layout"
+        const val FAIL = "fail"
     }
 
-    private val _defaultLayout = MutableSharedFlow<String>()
-    var defaultLayout: SharedFlow<String> = _defaultLayout.asSharedFlow()
+    private val _defaultLayout = MutableStateFlow<String?>(null)
+    val defaultLayout: Flow<String>
+        get() = _defaultLayout.filterNotNull()
 
-    private val _result = MutableSharedFlow<Result<List<Hit>>>()
-    var result: SharedFlow<Result<List<Hit>>> = _result.asSharedFlow()
+
+    private val _images = MutableStateFlow<PagingData<Hit>?>(null)
+    val images: Flow<PagingData<Hit>>
+        get() = _images.filterNotNull()
+
 
     private val _searchSuggestions = MutableStateFlow<Cursor?>(null)
-    val searchSuggestions: StateFlow<Cursor?> = _searchSuggestions.asStateFlow()
+    val searchSuggestions: Flow<Cursor>
+        get()  = _searchSuggestions.filterNotNull()
 
     private val _isLinear = MutableStateFlow<Boolean>(true)
     val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
@@ -44,27 +48,19 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun loadAllImage(){
         viewModelScope.launch {
-            val imageResult = repository.getAllImages()
-            withContext(Dispatchers.Main){
-                _result.emit(imageResult)
-            }
+            _images.value = repository.getAllImages().cachedIn(viewModelScope).first()
         }
     }
 
     fun getDefaultLayoutByRemoteConfig() {
-        repository.getDefaultLayoutByRemoteConfig { layout ->
-            viewModelScope.launch {
-                _defaultLayout.emit(layout)
-            }
+        viewModelScope.launch {
+            repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL)
         }
     }
 
-    fun getImagesFromPixabayAPI(input: String) {
+    fun getImagesBySearch(input: String) {
         viewModelScope.launch {
-            val imageResult = repository.getImagesFromPixabayAPI(input)
-            withContext(Dispatchers.Main) {
-                _result.emit(imageResult)
-            }
+            _images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
         }
     }
 

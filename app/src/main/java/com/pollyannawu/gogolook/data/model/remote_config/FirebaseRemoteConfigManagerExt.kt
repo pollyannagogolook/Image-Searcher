@@ -6,7 +6,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.firebase.remoteconfig.get
 import com.pollyannawu.gogolook.R
-import com.pollyannawu.gogolook.data.model.RemoteDataSourceImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 

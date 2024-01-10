@@ -11,11 +11,11 @@ interface Repository {
     fun getAllImages(): Flow<PagingData<Hit>>
     fun getImageBySearch(query: String = ""): Flow<PagingData<Hit>>
 
-    fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit)
+    fun getDefaultLayoutByRemoteConfig(key: String, fallback: String)
 
 
 
-    fun updateSearchHistorySuggestion(query: String)
+    fun updateSearchHistorySuggestion(query: String): Cursor?
 
     fun saveSearchQuery(query: String)
 }
