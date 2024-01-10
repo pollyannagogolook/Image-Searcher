@@ -19,7 +19,7 @@ plugins {
 
 android {
     namespace = "com.pollyannawu.gogolook"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
 

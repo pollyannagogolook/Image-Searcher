@@ -3,10 +3,8 @@ package com.pollyannawu.gogolook
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -16,10 +14,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
-import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
 import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -41,7 +37,6 @@ class MainActivity : ComponentActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        init()
 
 
         // set layout manager after getting remote setting value
@@ -57,7 +52,7 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.result.combine(viewModel.isLinear) { result, isLinear ->
+            viewModel.images.combine(viewModel.isLinear) { result, isLinear ->
                 Pair(result, isLinear)
             }.collect { (result, isLinear) ->
                 when (result) {
@@ -201,12 +196,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun updateSearchHistorySuggestion(query: String) {
-        viewModel.updateSearchHistorySuggestion(query)
+//        viewModel.updateSearchHistorySuggestion(query)
     }
 
 
     private fun performSearch(query: String) {
-        viewModel.getImagesFromPixabayAPI(query)
+//        viewModel.getImagesFromPixabayAPI(query)
         binding.searchHistoryRecyclerview.visibility = View.GONE
     }
 
