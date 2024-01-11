@@ -24,7 +24,10 @@ android {
     defaultConfig {
 
         // get api key in local properties
-        buildConfigField("String", "API_KEY", "\"${getPixabayAccess()}\"")
+
+        val properties = Properties()
+        properties.load(rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
 
         applicationId = "com.pollyannawu.gogolook"
         minSdk = 24
@@ -85,6 +88,7 @@ dependencies {
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.paging:paging-common-android:3.3.0-alpha02")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
 
 
     testImplementation("junit:junit:4.13.2")

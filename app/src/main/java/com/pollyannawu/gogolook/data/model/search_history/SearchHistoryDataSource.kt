@@ -7,11 +7,12 @@ import android.net.Uri
 import android.provider.BaseColumns
 import android.provider.SearchRecentSuggestions
 import com.pollyannawu.gogolook.searchbar.SuggestionProvider
+import dagger.hilt.EntryPoint
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
-class SearchHistoryDataSource (private val app: Application) {
+@Singleton
+class SearchHistoryDataSource @Inject constructor(private val app: Application) {
 
     fun updateSearchHistorySuggestion(query: String): Cursor? {
         // use content provider to access query history

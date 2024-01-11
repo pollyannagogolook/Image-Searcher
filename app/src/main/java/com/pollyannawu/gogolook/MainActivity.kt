@@ -3,6 +3,7 @@ package com.pollyannawu.gogolook
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView.OnQueryTextListener
@@ -10,12 +11,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pollyannawu.gogolook.data.dataclass.Result
+import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
 import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -37,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-
+        init()
 
         // set layout manager after getting remote setting value
         lifecycleScope.launch {
@@ -54,25 +58,13 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             viewModel.images.combine(viewModel.isLinear) { result, isLinear ->
                 Pair(result, isLinear)
-            }.collect { (result, isLinear) ->
-                when (result) {
-                    is Result.Success -> {
-                        if (result.data.isEmpty()) {
-                            showErrorUI(resources.getString(R.string.no_found, lastQuery))
-                            return@collect
-                        }
-                        imageAdapter = ImageAdapter(isLinear)
-                        binding.imageRecyclerview.adapter = imageAdapter
-                        imageAdapter?.submitList(result.data)
-                        showSuccessUI()
-                    }
+            }.collectLatest { (result, isLinear) ->
+                imageAdapter = ImageAdapter(isLinear)
+                Log.i(ITAG, "main activity: $result")
+                binding.imageRecyclerview.adapter = imageAdapter
+                imageAdapter?.submitData(result)
 
-                    is Result.Loading -> showLoadingUI()
-                    is Result.Error -> showErrorUI(resources.getString(R.string.result_fail_hint))
-                    is Result.Fail -> {
-                        showErrorUI(resources.getString(R.string.result_fail_hint))
-                    }
-                }
+                showSuccessUI()
 
             }
         }

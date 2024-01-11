@@ -1,5 +1,6 @@
 package com.pollyannawu.gogolook.data.model.image_search
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.pollyannawu.gogolook.data.dataclass.Hit
@@ -13,13 +14,12 @@ import javax.inject.Singleton
  * In this case, the PagingSource is the dataSource to fetch data from Pixabay API.
  * Thus we need to inject ApiService and query to the constructor.
  * **/
-
+const val ITAG = "LoadImage"
 class ImagePagingSource (
     private val service: ApiService,
     private val query: String
 ) : PagingSource<Int, Hit>() {
     companion object {
-        private const val NETWORK_PAGE_SIZE = 25
         private const val STARTING_PAGE_INDEX = 1
     }
 
@@ -29,14 +29,16 @@ class ImagePagingSource (
             val response = service.searchImages(
                 input = query,
                 page = STARTING_PAGE_INDEX,
-                per_page = NETWORK_PAGE_SIZE
+                per_page = params.loadSize
             )
 
-            val photos = response.body()
+            val photos = response.hits
+
+            Log.i(ITAG, "load: ${photos.size}")
             LoadResult.Page(
-                data = photos?.hits ?: emptyList(),
+                data = photos,
                 prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (page == photos?.totalHits) null else page + 1
+                nextKey = if (page == photos.size) null else page + 1
             )
         } catch (exception: Exception) {
             LoadResult.Error(exception)

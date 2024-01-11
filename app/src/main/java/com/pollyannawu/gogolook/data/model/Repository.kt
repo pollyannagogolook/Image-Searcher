@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    fun getAllImages(): Flow<PagingData<Hit>>
-    fun getImageBySearch(query: String = ""): Flow<PagingData<Hit>>
+    suspend fun getImageBySearch(query: String = ""): Flow<PagingData<Hit>>
 
     fun getDefaultLayoutByRemoteConfig(key: String, fallback: String)
 

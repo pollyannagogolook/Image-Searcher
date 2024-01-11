@@ -17,11 +17,9 @@ class RepositoryImpl @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
     private val searchHistoryRepository: SearchHistoryRepository): Repository{
 
-    override fun getAllImages(): Flow<PagingData<Hit>> {
-        return imageRepository.getAllImages()
-    }
 
-    override fun getImageBySearch(query: String): Flow<PagingData<Hit>> {
+
+    override suspend fun getImageBySearch(query: String): Flow<PagingData<Hit>> {
         return imageRepository.getImageBySearch(query)
     }
 

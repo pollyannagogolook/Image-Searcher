@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.marginEnd
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,7 @@ import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
 import kotlinx.coroutines.flow.SharingCommand
 
 class ImageAdapter(private val isLinear: Boolean) :
-    ListAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback) {
+    PagingDataAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback) {
 
     class ImageViewHolder(private val binding: ImageViewholderBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -91,7 +92,7 @@ class ImageAdapter(private val isLinear: Boolean) :
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bind(getItem(position), isLinear)
+        getItem(position)?.let { holder.bind(it, isLinear) }
 
     }
 

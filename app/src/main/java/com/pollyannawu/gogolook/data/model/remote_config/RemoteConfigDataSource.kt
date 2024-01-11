@@ -63,7 +63,7 @@ class RemoteConfigDataSource @Inject constructor(): RemoteConfig {
 
     override fun getString(key: String, fallback: String): String {
         val config = firebaseRemoteConfig?.get(key)?: FirebaseRemoteConfig.getInstance().get(key)
-
+        Log.i(TAG, "key: $key, value: ${config.asString()}")
         return try {
             config.asString()
         }catch (e: IllegalArgumentException){
