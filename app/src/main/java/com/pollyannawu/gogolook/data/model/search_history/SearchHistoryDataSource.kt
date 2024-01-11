@@ -10,8 +10,8 @@ import com.pollyannawu.gogolook.searchbar.SuggestionProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class SearchHistoryDataSource @Inject constructor(private val app: Application) {
+
+class SearchHistoryDataSource (private val app: Application) {
 
     fun updateSearchHistorySuggestion(query: String): Cursor? {
         // use content provider to access query history

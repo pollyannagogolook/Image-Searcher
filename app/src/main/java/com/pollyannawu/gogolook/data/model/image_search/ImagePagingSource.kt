@@ -13,8 +13,8 @@ import javax.inject.Singleton
  * In this case, the PagingSource is the dataSource to fetch data from Pixabay API.
  * Thus we need to inject ApiService and query to the constructor.
  * **/
-@Singleton
-class ImagePagingSource @Inject constructor(
+
+class ImagePagingSource (
     private val service: ApiService,
     private val query: String
 ) : PagingSource<Int, Hit>() {
