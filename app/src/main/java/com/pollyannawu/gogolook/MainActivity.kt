@@ -66,21 +66,26 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
 
-                viewModel.images.collectLatest { result ->
-                    Log.i(ITAG, "main activity: $result")
-                    binding.imageRecyclerview.adapter = imageAdapter
+            viewModel.images.combine(viewModel.isLinear) { images, isLinear ->
+                Pair(images, isLinear)
+            }.collect { (images, isLinear) ->
 
-                    imageAdapter?.submitData(result)
+                Log.i(ITAG, "main activity: $images")
+                showSuccessUI()
+                imageAdapter = ImageAdapter(isLinear)
+                binding.imageRecyclerview.adapter = imageAdapter
 
-                    if (imageAdapter != null) {
-                        val itemCount = imageAdapter?.snapshot()?.items?.size
-                        Log.i(ITAG, "main activity: Item count: $itemCount")
-                    } else {
-                        Log.i(ITAG, "main activity: Adapter or data is null or empty")
-                    }
-                    showSuccessUI()
+                imageAdapter?.submitData(images)
 
+                if (imageAdapter != null) {
+                    val itemCount = imageAdapter?.snapshot()?.items?.size
+                    Log.i(ITAG, "main activity: Item count: $itemCount")
+                } else {
+                    Log.i(ITAG, "main activity: Adapter or data is null or empty")
                 }
+
+
+            }
 
         }
 
@@ -156,10 +161,9 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    private fun init(){
+    private fun init() {
         showLoadingUI()
         viewModel.getDefaultLayoutByRemoteConfig()
-        imageAdapter = ImageAdapter(true)
         viewModel.loadAllImage()
     }
 
