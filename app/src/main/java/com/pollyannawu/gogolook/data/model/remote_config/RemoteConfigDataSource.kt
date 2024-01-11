@@ -1,18 +1,22 @@
 package com.pollyannawu.gogolook.data.model.remote_config
 
 import android.util.Log
-import com.google.firebase.remoteconfig.BuildConfig
+import com.google.firebase.remoteconfig.ConfigUpdate
+import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.get
 import com.pollyannawu.gogolook.R
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// data source
 @Singleton
-class FirebaseRemoteConfigManagerExt @Inject constructor(): RemoteConfig {
+class RemoteConfigDataSource @Inject constructor(): RemoteConfig {
     companion object {
         const val TAG = "FirebaseRemoteConfigManagerExt"
+        const val DEFAULT_LAYOUT = "default_layout"
+        const val FALLBACK = "fallback"
     }
 
     private var firebaseRemoteConfig: FirebaseRemoteConfig? = null
@@ -29,6 +33,23 @@ class FirebaseRemoteConfigManagerExt @Inject constructor(): RemoteConfig {
 
         // set default value
         firebaseRemoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
+
+        // set update listener
+        firebaseRemoteConfig?.addOnConfigUpdateListener(object : ConfigUpdateListener {
+            override fun onUpdate(configUpdate : ConfigUpdate) {
+                Log.d(TAG, "Updated keys: " + configUpdate.updatedKeys);
+
+                if (configUpdate.updatedKeys.contains(DEFAULT_LAYOUT)) {
+                    firebaseRemoteConfig?.activate()?.addOnCompleteListener {
+                        getString(DEFAULT_LAYOUT, FALLBACK)
+                    }
+                }
+            }
+
+            override fun onError(error : FirebaseRemoteConfigException) {
+                Log.w(TAG, "Config update error with code: " + error.code, error)
+            }
+        })
 
         // fetch remote config
         firebaseRemoteConfig?.fetchAndActivate()?.addOnCompleteListener { task ->

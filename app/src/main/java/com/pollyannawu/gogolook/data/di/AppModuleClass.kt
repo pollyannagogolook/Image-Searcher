@@ -3,7 +3,7 @@ package com.pollyannawu.gogolook.data.di
 
 import com.pollyannawu.gogolook.data.model.Repository
 import com.pollyannawu.gogolook.data.model.RepositoryImpl
-import com.pollyannawu.gogolook.data.model.remote_config.FirebaseRemoteConfigManagerExt
+import com.pollyannawu.gogolook.data.model.remote_config.RemoteConfigDataSource
 import com.pollyannawu.gogolook.data.model.remote_config.RemoteConfig
 
 import dagger.Binds
@@ -23,7 +23,7 @@ abstract class AppModuleClass {
     abstract fun provideRepository(repositoryImpl: RepositoryImpl): Repository
 
     @Binds
-    abstract fun provideRemoteConfig(firebaseRemoteConfigManagerExt: FirebaseRemoteConfigManagerExt): RemoteConfig
+    abstract fun provideRemoteConfig(remoteConfigDataSource: RemoteConfigDataSource): RemoteConfig
 
 
 
