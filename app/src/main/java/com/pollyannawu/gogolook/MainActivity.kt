@@ -208,12 +208,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun updateSearchHistorySuggestion(query: String) {
-//        viewModel.updateSearchHistorySuggestion(query)
+        viewModel.updateSearchHistorySuggestion(query)
     }
 
 
     private fun performSearch(query: String) {
-//        viewModel.getImagesFromPixabayAPI(query)
+        viewModel.getImagesBySearch(query)
         binding.searchHistoryRecyclerview.visibility = View.GONE
     }
 
