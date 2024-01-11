@@ -10,8 +10,11 @@ import android.widget.SearchView.OnQueryTextListener
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pollyannawu.gogolook.data.dataclass.Result
@@ -19,8 +22,14 @@ import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
 import com.pollyannawu.gogolook.searchbar.SearchHistoryCursorAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -56,17 +65,23 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.images.combine(viewModel.isLinear) { result, isLinear ->
-                Pair(result, isLinear)
-            }.collectLatest { (result, isLinear) ->
-                imageAdapter = ImageAdapter(isLinear)
-                Log.i(ITAG, "main activity: $result")
-                binding.imageRecyclerview.adapter = imageAdapter
-                imageAdapter?.submitData(result)
 
-                showSuccessUI()
+                viewModel.images.collectLatest { result ->
+                    Log.i(ITAG, "main activity: $result")
+                    binding.imageRecyclerview.adapter = imageAdapter
 
-            }
+                    imageAdapter?.submitData(result)
+
+                    if (imageAdapter != null) {
+                        val itemCount = imageAdapter?.snapshot()?.items?.size
+                        Log.i(ITAG, "main activity: Item count: $itemCount")
+                    } else {
+                        Log.i(ITAG, "main activity: Adapter or data is null or empty")
+                    }
+                    showSuccessUI()
+
+                }
+
         }
 
         lifecycleScope.launch {
@@ -144,6 +159,7 @@ class MainActivity : ComponentActivity() {
     private fun init(){
         showLoadingUI()
         viewModel.getDefaultLayoutByRemoteConfig()
+        imageAdapter = ImageAdapter(true)
         viewModel.loadAllImage()
     }
 

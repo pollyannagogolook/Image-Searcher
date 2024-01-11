@@ -10,7 +10,7 @@ interface Repository {
 
     suspend fun getImageBySearch(query: String = ""): Flow<PagingData<Hit>>
 
-    fun getDefaultLayoutByRemoteConfig(key: String, fallback: String)
+    fun getDefaultLayoutByRemoteConfig(key: String, fallback: String): String
 
 
 

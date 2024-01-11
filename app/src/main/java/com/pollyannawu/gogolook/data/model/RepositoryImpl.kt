@@ -23,8 +23,8 @@ class RepositoryImpl @Inject constructor(
         return imageRepository.getImageBySearch(query)
     }
 
-    override fun getDefaultLayoutByRemoteConfig(key: String, fallback: String) {
-        remoteConfigRepository.getDefaultLayout(key, fallback)
+    override fun getDefaultLayoutByRemoteConfig(key: String, fallback: String) : String{
+        return remoteConfigRepository.getDefaultLayout(key, fallback)
     }
 
 

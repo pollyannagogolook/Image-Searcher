@@ -33,12 +33,15 @@ class ImagePagingSource (
             )
 
             val photos = response.hits
+            val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
+            val nextKey = if (photos.isEmpty()) null else page + (params.loadSize / 20)
 
-            Log.i(ITAG, "load: ${photos.size}")
+            Log.i(ITAG, "page: $page, page size: ${params.loadSize}, load size: ${photos.size}, page: $page, prevKey: $prevKey, nextKey: $nextKey")
+
             LoadResult.Page(
                 data = photos,
-                prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (page == photos.size) null else page + 1
+                prevKey = prevKey,
+                nextKey = nextKey
             )
         } catch (exception: Exception) {
             LoadResult.Error(exception)

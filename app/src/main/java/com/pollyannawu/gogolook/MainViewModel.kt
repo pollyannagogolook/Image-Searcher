@@ -69,7 +69,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun getDefaultLayoutByRemoteConfig() {
         viewModelScope.launch {
-            repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL)
+            _defaultLayout.value = repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL)
         }
     }
 
