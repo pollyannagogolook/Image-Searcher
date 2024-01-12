@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    companion object{
+    companion object {
         const val TAG = "main viewModel"
         const val DEFAULT_LAYOUT_KEY = "default_layout"
         const val FAIL = "fail"
@@ -43,24 +43,20 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     private val _searchSuggestions = MutableStateFlow<Cursor?>(null)
     val searchSuggestions: Flow<Cursor>
-        get()  = _searchSuggestions.filterNotNull()
+        get() = _searchSuggestions.filterNotNull()
 
     private val _isLinear = MutableStateFlow<Boolean>(true)
     val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
 
-
-
-    fun loadAllImage(){
+    fun loadAllImage() {
         viewModelScope.launch {
             try {
-                 repository.getImageBySearch("").cachedIn(viewModelScope).collect{
+                repository.getImageBySearch("").cachedIn(viewModelScope).collect {
                     _images.value = it
-
-                     Log.i(ITAG, "viewModel: ${_images.value}, size: ${it.map { it.previewURL } }}")
                 }
 
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -69,27 +65,37 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun getDefaultLayoutByRemoteConfig() {
         viewModelScope.launch {
-            _defaultLayout.value = repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL)
+            _defaultLayout.value =
+                repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL)
         }
     }
 
     fun getImagesBySearch(input: String) {
         viewModelScope.launch {
-            _images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
+            try {
+                Log.i(ITAG, "viewModel: $input")
+                _images.value = null
+                repository.getImageBySearch(query = input).cachedIn(viewModelScope).collect {
+                    _images.value = it
+                    Log.i(ITAG, "viewModel: ${_images.value}, size: ${it.map { it.previewURL }}}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "viewModel: ${e.message}")
+            }
         }
     }
 
 
-    fun updateSearchHistorySuggestion(query: String){
+    fun updateSearchHistorySuggestion(query: String) {
         _searchSuggestions.value = repository.updateSearchHistorySuggestion(query)
     }
 
-    fun saveSearchQuery(query: String){
+    fun saveSearchQuery(query: String) {
         repository.saveSearchQuery(query)
     }
 
-    fun toggleLayout(){
-       _isLinear.value = !_isLinear.value
+    fun toggleLayout() {
+        _isLinear.value = !_isLinear.value
     }
 }
 

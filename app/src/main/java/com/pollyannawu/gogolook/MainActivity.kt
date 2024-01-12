@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
             viewModel.images.combine(viewModel.isLinear) { images, isLinear ->
                 Pair(images, isLinear)
-            }.collect { (images, isLinear) ->
+            }.collectLatest { (images, isLinear) ->
 
                 Log.i(ITAG, "main activity: $images")
                 showSuccessUI()
@@ -178,6 +178,7 @@ class MainActivity : ComponentActivity() {
 
     private fun showLoadingUI() {
         binding.shimmerLayout.startShimmer()
+        binding.imageRecyclerview.visibility = View.GONE
         binding.shimmerLayout.visibility = View.VISIBLE
         binding.errorHintText.visibility = View.GONE
         binding.errorHintLottie.visibility = View.GONE
@@ -214,6 +215,7 @@ class MainActivity : ComponentActivity() {
 
     private fun performSearch(query: String) {
         viewModel.getImagesBySearch(query)
+        Log.i(ITAG, "perform search: $query")
         binding.searchHistoryRecyclerview.visibility = View.GONE
     }
 
