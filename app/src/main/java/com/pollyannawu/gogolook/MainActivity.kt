@@ -74,9 +74,9 @@ class MainActivity : ComponentActivity() {
 
                 showSuccessUI()
                 val currentData: PagingData<ImageLayoutType> = if (isLinear) {
-                    images.map { ImageLayoutType.LinearImage(it, true) }
+                    images.map { ImageLayoutType.LinearImage(it) }
                 } else {
-                    images.map { ImageLayoutType.GridImage(it, false) }
+                    images.map { ImageLayoutType.GridImage(it) }
                 }
                 imageAdapter?.submitData(currentData)
             }
