@@ -10,8 +10,7 @@ import com.pollyannawu.gogolook.R
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// data source
-@Singleton
+// data sourceｒ
 class RemoteConfigDataSource @Inject constructor(): RemoteConfig {
     companion object {
         const val TAG = "FirebaseRemoteConfigManagerExt"
