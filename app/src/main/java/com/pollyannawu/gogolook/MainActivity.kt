@@ -14,9 +14,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.pollyannawu.gogolook.data.dataclass.ImageLayoutType
 import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
@@ -70,19 +72,15 @@ class MainActivity : ComponentActivity() {
                 Pair(images, isLinear)
             }.collectLatest { (images, isLinear) ->
 
-                Log.i(ITAG, "main activity: $images")
                 showSuccessUI()
-                imageAdapter = ImageAdapter(isLinear)
-                binding.imageRecyclerview.adapter = imageAdapter
-
-                imageAdapter?.submitData(images)
-
-                if (imageAdapter != null) {
-                    val itemCount = imageAdapter?.snapshot()?.items?.size
-                    Log.i(ITAG, "main activity: Item count: $itemCount")
+                val currentData: PagingData<ImageLayoutType> = if (isLinear) {
+                    images.map { ImageLayoutType.LinearImage(it, true) }
                 } else {
-                    Log.i(ITAG, "main activity: Adapter or data is null or empty")
+                    images.map { ImageLayoutType.GridImage(it, false) }
                 }
+
+                imageAdapter?.submitData(currentData)
+
 
 
             }
@@ -162,9 +160,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun init() {
+        attachPagingAdapter()
         showLoadingUI()
         viewModel.getDefaultLayoutByRemoteConfig()
         viewModel.loadAllImage()
+    }
+
+    private fun attachPagingAdapter(){
+        imageAdapter = ImageAdapter()
+        binding.imageRecyclerview.adapter = imageAdapter
     }
 
     // ui state to different result type
