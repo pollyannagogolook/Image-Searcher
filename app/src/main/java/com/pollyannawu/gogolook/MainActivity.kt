@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
 
             viewModel.images.combine(viewModel.isLinear) { images, isLinear ->
-                Pair(images, isLinear)
+               Pair(images, isLinear)
             }.collectLatest { (images, isLinear) ->
 
                 showSuccessUI()
@@ -78,11 +78,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     images.map { ImageLayoutType.GridImage(it, false) }
                 }
-
                 imageAdapter?.submitData(currentData)
-
-
-
             }
 
         }
@@ -219,7 +215,6 @@ class MainActivity : ComponentActivity() {
 
     private fun performSearch(query: String) {
         viewModel.getImagesBySearch(query)
-        Log.i(ITAG, "perform search: $query")
         binding.searchHistoryRecyclerview.visibility = View.GONE
     }
 

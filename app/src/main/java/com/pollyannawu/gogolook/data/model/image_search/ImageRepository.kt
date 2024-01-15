@@ -21,7 +21,6 @@ import javax.inject.Singleton
 class ImageRepository @Inject constructor(private val service: ApiService){
 
     fun getImageBySearch(input: String): Flow<PagingData<Hit>>{
-        Log.i(ITAG, "reppository: $input")
         val pagerFlow = Pager(
             config = PagingConfig(enablePlaceholders = true, pageSize = NETWORK_PAGE_SIZE),
             pagingSourceFactory = { ImagePagingSource(
@@ -30,7 +29,6 @@ class ImageRepository @Inject constructor(private val service: ApiService){
 
             ) }
         ).flow
-        Log.i(ITAG, "repository: $pagerFlow")
 
         return pagerFlow
     }

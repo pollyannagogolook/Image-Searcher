@@ -73,14 +73,12 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun getImagesBySearch(input: String) {
         viewModelScope.launch {
             try {
-                Log.i(ITAG, "viewModel: $input")
                 _images.value = null
                 repository.getImageBySearch(query = input).cachedIn(viewModelScope).collect {
                     _images.value = it
-                    Log.i(ITAG, "viewModel: ${_images.value}, size: ${it.map { it.previewURL }}}")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "viewModel: ${e.message}")
+                e.printStackTrace()
             }
         }
     }

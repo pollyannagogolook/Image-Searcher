@@ -36,7 +36,6 @@ class RemoteConfigDataSource @Inject constructor(): RemoteConfig {
         // set update listener
         firebaseRemoteConfig?.addOnConfigUpdateListener(object : ConfigUpdateListener {
             override fun onUpdate(configUpdate : ConfigUpdate) {
-                Log.d(TAG, "Updated keys: " + configUpdate.updatedKeys);
 
                 if (configUpdate.updatedKeys.contains(DEFAULT_LAYOUT)) {
                     firebaseRemoteConfig?.activate()?.addOnCompleteListener {
@@ -46,7 +45,7 @@ class RemoteConfigDataSource @Inject constructor(): RemoteConfig {
             }
 
             override fun onError(error : FirebaseRemoteConfigException) {
-                Log.w(TAG, "Config update error with code: " + error.code, error)
+                error.printStackTrace()
             }
         })
 
@@ -62,7 +61,7 @@ class RemoteConfigDataSource @Inject constructor(): RemoteConfig {
 
     override fun getString(key: String, fallback: String): String {
         val config = firebaseRemoteConfig?.get(key)?: FirebaseRemoteConfig.getInstance().get(key)
-        Log.i(TAG, "key: $key, value: ${config.asString()}")
+
         return try {
             config.asString()
         }catch (e: IllegalArgumentException){

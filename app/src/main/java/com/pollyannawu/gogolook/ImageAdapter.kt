@@ -19,6 +19,7 @@ class ImageAdapter: PagingDataAdapter<ImageLayoutType, RecyclerView.ViewHolder>(
     companion object{
         const val VIEW_TYPE_LINEAR = 0
         const val VIEW_TYPE_GRID = 1
+        const val INVALID_VIEW_TYPE = "invalid view type"
     }
 
 
@@ -59,7 +60,7 @@ class ImageAdapter: PagingDataAdapter<ImageLayoutType, RecyclerView.ViewHolder>(
                 GridViewHolder(binding)
             }
 
-            else -> throw IllegalArgumentException("Invalid view type")
+            else -> throw IllegalArgumentException(INVALID_VIEW_TYPE)
         }
     }
 
@@ -67,7 +68,7 @@ class ImageAdapter: PagingDataAdapter<ImageLayoutType, RecyclerView.ViewHolder>(
         return when(getItem(position)){
             is ImageLayoutType.LinearImage -> VIEW_TYPE_LINEAR
             is ImageLayoutType.GridImage -> VIEW_TYPE_GRID
-            else -> throw IllegalArgumentException("Invalid view type")
+            else -> throw IllegalArgumentException(INVALID_VIEW_TYPE)
         }
     }
 
@@ -77,7 +78,7 @@ class ImageAdapter: PagingDataAdapter<ImageLayoutType, RecyclerView.ViewHolder>(
         when (imageLayoutType){
             is ImageLayoutType.LinearImage -> (holder as LinearViewHolder).bind(imageLayoutType.data)
             is ImageLayoutType.GridImage -> (holder as GridViewHolder).bind(imageLayoutType.data)
-            else -> throw IllegalArgumentException("Invalid view type")
+            else -> throw IllegalArgumentException(INVALID_VIEW_TYPE)
         }
     }
 
