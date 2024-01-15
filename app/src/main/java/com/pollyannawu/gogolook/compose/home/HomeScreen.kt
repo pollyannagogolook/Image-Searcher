@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -39,8 +40,11 @@ import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pollyannawu.gogolook.MainViewModel
+import com.pollyannawu.gogolook.data.dataclass.Hit
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,14 +60,15 @@ fun HomeScreen(
             HomeTopAppBar()
         }
     ) { contentPadding ->
-//        HomePagerScreen(
-//            pagerState = imagesPagingItems,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .wrapContentHeight()
-//                .background(MaterialTheme.colorScheme.surface)
-//                .padding(contentPadding)
-//        )
+        HomePagerScreen(
+            imageFlow = viewModel.images,
+            isLinearFlow = viewModel.isLinear,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(contentPadding)
+        )
 
     }
 }
@@ -71,9 +76,19 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomePagerScreen(
-    pagerState: PagerState,
     modifier: Modifier = Modifier,
+    imageFlow: Flow<PagingData<Hit>>,
+    isLinearFlow: Flow<Boolean>
 ) {
+    val lazyPagingItems = imageFlow.collectAsLazyPagingItems()
+    LazyColumn(modifier = Modifier.fillMaxSize()){
+        items(count = lazyPagingItems.itemCount){
+            lazyPagingItems[it]?.let { hit ->
+                // show each image card
+            }
+        }
+    }
+
 
 }
 
@@ -93,7 +108,7 @@ private fun HomeTopAppBar(
             modifier = Modifier
                 .padding(vertical = 8.dp)
                 .align(Alignment.TopCenter)
-                .semantics { traversalIndex = -1f },
+                .semantics { traversalIndex = 1f },
             query = text,
             onQueryChange = { text = it },
             onSearch = { active = true },
@@ -125,6 +140,6 @@ private fun HomeTopAppBar(
 @Preview
 @Composable
 fun previewSearchBar() {
-    HomeTopAppBar()
+    HomeScreen()
 }
 

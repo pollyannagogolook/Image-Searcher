@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pollyannawu.gogolook.compose.home.HomeScreen
 
 @Composable
 fun ImageSearcherApp() {
@@ -22,7 +23,7 @@ fun ImageSearcherNavHost(
    val activity = (LocalContext.current) as Activity
     NavHost(navController = navController, startDestination = Screen.Home.route){
         composable(route = Screen.Home.route){
-
+            HomeScreen()
         }
     }
 }

@@ -43,10 +43,6 @@ class MainActivity : ComponentActivity() {
         const val GRID_COUNT_SPAN = 2
     }
 
-    private val viewModel: MainViewModel by viewModels()
-    private var imageAdapter: ImageAdapter? = null
-    private var lastQuery = ""
-    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent{
@@ -56,76 +52,76 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    private fun init() {
-        showLoadingUI()
-        viewModel.getDefaultLayoutByRemoteConfig()
-        viewModel.loadAllImage()
-    }
-
-    // ui state to different result type
-    private fun showSuccessUI() {
-        binding.shimmerLayout.stopShimmer()
-        binding.shimmerLayout.visibility = View.GONE
-        binding.errorHintText.visibility = View.GONE
-        binding.errorHintLottie.visibility = View.GONE
-        binding.imageRecyclerview.visibility = View.VISIBLE
-    }
-
-    private fun showLoadingUI() {
-        binding.shimmerLayout.startShimmer()
-        binding.imageRecyclerview.visibility = View.GONE
-        binding.shimmerLayout.visibility = View.VISIBLE
-        binding.errorHintText.visibility = View.GONE
-        binding.errorHintLottie.visibility = View.GONE
-    }
-
-    private fun showErrorUI(content: String) {
-
-        binding.shimmerLayout.stopShimmer()
-        binding.imageRecyclerview.visibility = View.GONE
-        binding.shimmerLayout.visibility = View.GONE
-
-        binding.errorHintLottie.visibility = View.VISIBLE
-
-
-        binding.errorHintText.visibility = View.VISIBLE
-        binding.errorHintText.text = content
-        binding.errorHintLottie.playAnimation()
-
-    }
-
-
-    // when user click search, should hide the soft keyboard
-    private fun hideKeyboard() {
-        this.currentFocus.let { view ->
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(view?.windowToken, 0)
-        }
-    }
-
-    private fun updateSearchHistorySuggestion(query: String) {
-        viewModel.updateSearchHistorySuggestion(query)
-    }
-
-
-    private fun performSearch(query: String) {
-        viewModel.getImagesBySearch(query)
-        Log.i(ITAG, "perform search: $query")
-        binding.searchHistoryRecyclerview.visibility = View.GONE
-    }
-
-
-    private fun saveSearchQuery(query: String) {
-        viewModel.saveSearchQuery(query)
-    }
-
-    private fun clickHistoryItem(item: String) {
-        showLoadingUI()
-        binding.searchBar.clearFocus()
-        binding.searchBar.setQuery(item, false)
-        performSearch(item)
-        hideKeyboard()
-    }
+//    private fun init() {
+//        showLoadingUI()
+//        viewModel.getDefaultLayoutByRemoteConfig()
+//        viewModel.loadAllImage()
+//    }
+//
+//    // ui state to different result type
+//    private fun showSuccessUI() {
+//        binding.shimmerLayout.stopShimmer()
+//        binding.shimmerLayout.visibility = View.GONE
+//        binding.errorHintText.visibility = View.GONE
+//        binding.errorHintLottie.visibility = View.GONE
+//        binding.imageRecyclerview.visibility = View.VISIBLE
+//    }
+//
+//    private fun showLoadingUI() {
+//        binding.shimmerLayout.startShimmer()
+//        binding.imageRecyclerview.visibility = View.GONE
+//        binding.shimmerLayout.visibility = View.VISIBLE
+//        binding.errorHintText.visibility = View.GONE
+//        binding.errorHintLottie.visibility = View.GONE
+//    }
+//
+//    private fun showErrorUI(content: String) {
+//
+//        binding.shimmerLayout.stopShimmer()
+//        binding.imageRecyclerview.visibility = View.GONE
+//        binding.shimmerLayout.visibility = View.GONE
+//
+//        binding.errorHintLottie.visibility = View.VISIBLE
+//
+//
+//        binding.errorHintText.visibility = View.VISIBLE
+//        binding.errorHintText.text = content
+//        binding.errorHintLottie.playAnimation()
+//
+//    }
+//
+//
+//    // when user click search, should hide the soft keyboard
+//    private fun hideKeyboard() {
+//        this.currentFocus.let { view ->
+//            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+//            imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+//        }
+//    }
+//
+//    private fun updateSearchHistorySuggestion(query: String) {
+//        viewModel.updateSearchHistorySuggestion(query)
+//    }
+//
+//
+//    private fun performSearch(query: String) {
+//        viewModel.getImagesBySearch(query)
+//        Log.i(ITAG, "perform search: $query")
+//        binding.searchHistoryRecyclerview.visibility = View.GONE
+//    }
+//
+//
+//    private fun saveSearchQuery(query: String) {
+//        viewModel.saveSearchQuery(query)
+//    }
+//
+//    private fun clickHistoryItem(item: String) {
+//        showLoadingUI()
+//        binding.searchBar.clearFocus()
+//        binding.searchBar.setQuery(item, false)
+//        performSearch(item)
+//        hideKeyboard()
+//    }
 }
 
 
