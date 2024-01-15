@@ -62,10 +62,11 @@ android {
         dataBinding = true
         viewBinding = true
         buildConfig = true
+        compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -90,6 +91,17 @@ dependencies {
     implementation("androidx.paging:paging-common-android:3.3.0-alpha02")
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
 
+    // compose
+    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.compose.ui:ui:1.1.0-alpha05")
+    implementation("androidx.compose.ui:ui-tooling:1.1.0-alpha05")
+    implementation("androidx.compose.material:material:1.1.0-alpha05")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    val nav_version = "2.7.6"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -97,8 +109,11 @@ dependencies {
 
 
     // hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
 
     // firebase for remote config
     implementation("com.google.firebase:firebase-config:21.6.0")
@@ -136,6 +151,13 @@ dependencies {
     // lottie
     val lottieVersion = "3.4.0"
     implementation("com.airbnb.android:lottie:$lottieVersion")
+
+    // paging
+    val paging_version = "3.2.1"
+
+    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:3.3.0-alpha02")
+
 }
 
 fun getPixabayAccess(): String? {

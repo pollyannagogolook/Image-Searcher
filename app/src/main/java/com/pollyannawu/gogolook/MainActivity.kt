@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView.OnQueryTextListener
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
@@ -17,6 +18,7 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.pollyannawu.gogolook.compose.ImageSearcherApp
 import com.pollyannawu.gogolook.data.dataclass.Result
 import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import com.pollyannawu.gogolook.databinding.ActivityMainBinding
@@ -47,117 +49,10 @@ class MainActivity : ComponentActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        init()
-
-        // set layout manager after getting remote setting value
-        lifecycleScope.launch {
-            viewModel.defaultLayout.collect { defaultLayout ->
-                if (defaultLayout == DEFAULT_LAYOUT) {
-                    binding.imageRecyclerview.layoutManager = LinearLayoutManager(this@MainActivity)
-                } else {
-                    binding.imageRecyclerview.layoutManager =
-                        GridLayoutManager(this@MainActivity, GRID_COUNT_SPAN)
-                }
-            }
+        setContent{
+            ImageSearcherApp()
         }
 
-        lifecycleScope.launch {
-
-            viewModel.images.combine(viewModel.isLinear) { images, isLinear ->
-                Pair(images, isLinear)
-            }.collectLatest { (images, isLinear) ->
-
-                Log.i(ITAG, "main activity: $images")
-                showSuccessUI()
-                imageAdapter = ImageAdapter(isLinear)
-                binding.imageRecyclerview.adapter = imageAdapter
-
-                imageAdapter?.submitData(images)
-
-                if (imageAdapter != null) {
-                    val itemCount = imageAdapter?.snapshot()?.items?.size
-                    Log.i(ITAG, "main activity: Item count: $itemCount")
-                } else {
-                    Log.i(ITAG, "main activity: Adapter or data is null or empty")
-                }
-
-
-            }
-
-        }
-
-        lifecycleScope.launch {
-            viewModel.searchSuggestions.collect { cursor ->
-                cursor?.let {
-                    val searchHistoryCursorAdapter = SearchHistoryCursorAdapter(
-                        cursor,
-                        SearchHistoryCursorAdapter.OnClickListener { query ->
-                            lastQuery = query
-                            clickHistoryItem(query)
-                        }
-                    )
-                    binding.searchHistoryRecyclerview.adapter = searchHistoryCursorAdapter
-                }
-            }
-        }
-
-
-        /**
-         * watch user's input: When input changed, should query from SearchSuggestionsProvider
-         * **/
-
-        binding.searchBar.setOnQueryTextListener(object : OnQueryTextListener {
-
-            // when user click search button on soft keyboard, call viewModel function to fetch data
-            // while calling api, should show shimmer
-            override fun onQueryTextSubmit(query: String?): Boolean {
-
-                binding.searchBar.clearFocus()
-                hideKeyboard()
-                showLoadingUI()
-
-
-                query?.let {
-                    performSearch(query)
-                    saveSearchQuery(query)
-                    lastQuery = query
-                }
-
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                binding.searchHistoryRecyclerview.visibility = View.VISIBLE
-                newText?.let {
-                    updateSearchHistorySuggestion(newText)
-                }
-                return false
-            }
-        })
-
-        binding.swapLayoutBtn.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                binding.imageRecyclerview.layoutManager =
-                    GridLayoutManager(this@MainActivity, GRID_COUNT_SPAN)
-                viewModel.toggleLayout()
-
-
-            } else {
-                binding.imageRecyclerview.layoutManager = LinearLayoutManager(this@MainActivity)
-                viewModel.toggleLayout()
-
-            }
-        }
-
-
-        // when user swipe refresh, perform search again
-        binding.swipeRefresh.setOnRefreshListener {
-            binding.swipeRefresh.isRefreshing = false
-            performSearch(lastQuery)
-        }
 
     }
 
