@@ -102,8 +102,10 @@ dependencies {
     val nav_version = "2.7.6"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
 
+    // test
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -132,6 +134,7 @@ dependencies {
     val version_glide = "4.15.1"
     implementation("com.github.bumptech.glide:glide:$version_glide")
     kapt("com.github.bumptech.glide:compiler:$version_glide")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
 
     // retrofit
