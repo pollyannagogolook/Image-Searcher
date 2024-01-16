@@ -30,11 +30,10 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         const val TAG = "main viewModel"
         const val DEFAULT_LAYOUT_KEY = "default_layout"
         const val FAIL = "fail"
+        const val LINEAR = "linear"
     }
 
-    private val _defaultLayout = MutableStateFlow<String?>(null)
-    val defaultLayout: Flow<String>
-        get() = _defaultLayout.filterNotNull()
+
 
 
     private val _images = MutableStateFlow<PagingData<Hit>?>(null)
@@ -50,6 +49,11 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
 
+    init {
+        getDefaultLayoutByRemoteConfig()
+        loadAllImage()
+    }
+
     fun loadAllImage() {
         viewModelScope.launch {
             try {
@@ -64,10 +68,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
-    fun getDefaultLayoutByRemoteConfig() {
+    private fun getDefaultLayoutByRemoteConfig() {
         viewModelScope.launch {
-            _defaultLayout.value =
-                repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL)
+            _isLinear.value = repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL) == LINEAR
         }
     }
 

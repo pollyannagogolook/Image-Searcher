@@ -128,12 +128,18 @@ private fun HomeTopAppBar(
             query = text,
             onQueryChange = {
                 text = it
+
             },
-            onSearch = { active = true },
+            onSearch = {
+                active = true
+
+            },
             active = active,
             onActiveChange = {
                 active = it
-                viewModel.getImagesBySearch(text)
+//                if (!text.isNullOrEmpty()) {
+//                    viewModel.getImagesBySearch(text)
+//                }
                 viewModel.updateSearchHistorySuggestion(text)
             },
             placeholder = { Text("Let's search images !") },
@@ -153,31 +159,31 @@ private fun HomeTopAppBar(
             }
         ) {
             // search history
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(all = 16.dp)
-                        .wrapContentHeight()
-                ) {
-                    items(suggestions.size) { index ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                                .clickable {
-                                    text = suggestions[index]
-                                    viewModel.getImagesBySearch(text)
-                                    active = false
-                                },
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = suggestions[index])
-                            Icon(
-                                imageVector = Icons.Default.History,
-                                contentDescription = "history icon"
-                            )
-                        }
+            LazyColumn(
+                modifier = Modifier
+                    .padding(all = 16.dp)
+                    .wrapContentHeight()
+            ) {
+                items(suggestions.size) { index ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .clickable {
+                                text = suggestions[index]
+                                viewModel.getImagesBySearch(text)
+                                active = false
+                            },
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = suggestions[index])
+                        Icon(
+                            imageVector = Icons.Default.History,
+                            contentDescription = "history icon"
+                        )
                     }
                 }
+            }
 
 
         }
@@ -185,9 +191,5 @@ private fun HomeTopAppBar(
     }
 }
 
-//@Preview
-//@Composable
-//fun previewSearchBar() {
-//    HomeScreen()
-//}
+
 
