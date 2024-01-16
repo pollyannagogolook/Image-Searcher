@@ -47,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pollyannawu.gogolook.MainViewModel
+import com.pollyannawu.gogolook.compose.paging.SingleImageScreen
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import kotlinx.coroutines.flow.Flow
 
@@ -86,10 +87,15 @@ fun HomePagerScreen(
     isLinearFlow: Flow<Boolean>
 ) {
     val lazyPagingItems = imageFlow.collectAsLazyPagingItems()
+    val isLinear by isLinearFlow.collectAsState(initial = true)
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(count = lazyPagingItems.itemCount) {
             lazyPagingItems[it]?.let { hit ->
                 // show each image card
+                SingleImageScreen(
+                    hit = hit,
+                    isLinear = isLinear
+                )
             }
         }
     }
