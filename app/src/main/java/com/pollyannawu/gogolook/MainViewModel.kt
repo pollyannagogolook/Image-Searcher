@@ -1,5 +1,6 @@
 package com.pollyannawu.gogolook
 
+import android.app.SearchManager
 import android.database.Cursor
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -41,8 +42,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         get() = _images.filterNotNull()
 
 
-    private val _searchSuggestions = MutableStateFlow<Cursor?>(null)
-    val searchSuggestions: Flow<Cursor>
+    private val _searchSuggestions = MutableStateFlow<List<String>>(emptyList())
+    val searchSuggestions: Flow<List<String>>
         get() = _searchSuggestions.filterNotNull()
 
     private val _isLinear = MutableStateFlow<Boolean>(true)
@@ -73,21 +74,33 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun getImagesBySearch(input: String) {
         viewModelScope.launch {
             try {
-                Log.i(ITAG, "viewModel: $input")
                 _images.value = null
                 repository.getImageBySearch(query = input).cachedIn(viewModelScope).collect {
                     _images.value = it
-                    Log.i(ITAG, "viewModel: ${_images.value}, size: ${it.map { it.previewURL }}}")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "viewModel: ${e.message}")
+              e.printStackTrace()
             }
         }
     }
 
 
     fun updateSearchHistorySuggestion(query: String) {
-        _searchSuggestions.value = repository.updateSearchHistorySuggestion(query)
+        val searchHistoryCursor = repository.updateSearchHistorySuggestion(query)
+        val list = ArrayList<String>()
+
+        // transfer cursor content to list
+        searchHistoryCursor?.let { cursor ->
+            while (cursor.moveToNext()) {
+                list.add(
+                    cursor.getString(
+                        cursor.getColumnIndexOrThrow(SearchManager.SUGGEST_COLUMN_TEXT_1)
+                    )
+                )
+            }
+        }
+        _searchSuggestions.value = list
+
     }
 
     fun saveSearchQuery(query: String) {

@@ -96,6 +96,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.1.0-alpha05")
     implementation("androidx.compose.ui:ui-tooling:1.1.0-alpha05")
     implementation("androidx.compose.material:material:1.1.0-alpha05")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     val nav_version = "2.7.6"

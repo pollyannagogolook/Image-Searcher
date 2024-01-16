@@ -14,9 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +43,7 @@ import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pollyannawu.gogolook.MainViewModel
@@ -55,7 +59,8 @@ fun HomeScreen(
     val imagesPagingItems = viewModel.images.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .fillMaxSize(),
         topBar = {
             HomeTopAppBar()
         }
@@ -81,8 +86,8 @@ fun HomePagerScreen(
     isLinearFlow: Flow<Boolean>
 ) {
     val lazyPagingItems = imageFlow.collectAsLazyPagingItems()
-    LazyColumn(modifier = Modifier.fillMaxSize()){
-        items(count = lazyPagingItems.itemCount){
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(count = lazyPagingItems.itemCount) {
             lazyPagingItems[it]?.let { hit ->
                 // show each image card
             }
@@ -95,25 +100,36 @@ fun HomePagerScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeTopAppBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
 ) {
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
 
+    val suggestions = viewModel.searchSuggestions.collectAsState(initial = emptyList()).value
+
     Box(
         Modifier
-            .fillMaxSize()
-            .semantics { isTraversalGroup = true }) {
-        SearchBar(
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .semantics { isTraversalGroup = true })
+    {
+        DockedSearchBar(
             modifier = Modifier
                 .padding(vertical = 8.dp)
                 .align(Alignment.TopCenter)
                 .semantics { traversalIndex = 1f },
             query = text,
-            onQueryChange = { text = it },
+            onQueryChange = {
+                text = it
+            },
             onSearch = { active = true },
             active = active,
-            onActiveChange = { active = it },
+            onActiveChange = {
+                active = it
+                viewModel.getImagesBySearch(text)
+                viewModel.updateSearchHistorySuggestion(text)
+            },
             placeholder = { Text("Let's search images !") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
@@ -129,17 +145,43 @@ private fun HomeTopAppBar(
                     contentDescription = "close icon"
                 )
             }
-        )
+        ) {
+            // search history
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .wrapContentHeight()
+                ) {
+                    items(suggestions.size) { index ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                                .clickable {
+                                    text = suggestions[index]
+                                    viewModel.getImagesBySearch(text)
+                                    active = false
+                                },
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = suggestions[index])
+                            Icon(
+                                imageVector = Icons.Default.History,
+                                contentDescription = "history icon"
+                            )
+                        }
+                    }
+                }
 
-        {
-            // searching history
+
         }
+
     }
 }
 
-@Preview
-@Composable
-fun previewSearchBar() {
-    HomeScreen()
-}
+//@Preview
+//@Composable
+//fun previewSearchBar() {
+//    HomeScreen()
+//}
 

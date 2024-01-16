@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+
     companion object {
         const val TAG = "mainactivity cursor"
         const val DEFAULT_LAYOUT = "linear"
