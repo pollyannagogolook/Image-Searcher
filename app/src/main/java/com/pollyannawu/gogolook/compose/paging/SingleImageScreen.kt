@@ -1,9 +1,9 @@
 package com.pollyannawu.gogolook.compose.paging
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,31 +11,30 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.placeholder
+import com.google.accompanist.coil.rememberCoilPainter
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.data.dataclass.Hit
 
 private const val DIMENSION_RATIO = "1:1"
 
-@OptIn(ExperimentalGlideComposeApi::class)
+
 @Composable
 fun SingleImageScreen(
     hit: Hit,
@@ -44,11 +43,25 @@ fun SingleImageScreen(
 ) {
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(all = 16.dp)
             .fillMaxSize()
             .wrapContentHeight(),
         shape = RoundedCornerShape(16.dp)
     ) {
+
+        val singleImage by remember {
+            mutableStateOf(hit)
+        }
+
+        val userPainter = rememberCoilPainter(
+            request = singleImage.userImageURL,
+            fadeIn = true
+        )
+
+        val mainImagePainter = rememberCoilPainter(
+            request = singleImage.largeImageURL,
+            fadeIn = true
+        )
 
         ConstraintLayout {
 
@@ -56,12 +69,14 @@ fun SingleImageScreen(
             val (
                 userImage, userName,
                 mainImage,
-                likes, downloads, comments, views,
-                likeIcon, downloadIcon, commentIcon, viewIcon
+                likes, downloads, comments, views
             ) = createRefs()
-            hit.largeImageURL.let {
-                hit.userImageURL.let {
-                    GlideImage(
+
+            if (isValidUrl(singleImage.userImageURL)) {
+
+
+                    Image(
+                        painter = userPainter,
                         modifier = Modifier
 
                             .clip(CircleShape)
@@ -73,14 +88,13 @@ fun SingleImageScreen(
                                 start.linkTo(parent.start, margin = 16.dp)
                                 height = Dimension.ratio(DIMENSION_RATIO)
                             },
-
-                        model = hit.userImageURL?.let { it } ?: "",
                         contentDescription = "user image",
-                        loading = placeholder(painterResource(id = R.drawable.gogolook))
+                        contentScale = ContentScale.Crop
                     )
+                }
 
                     Text(
-                        text = hit.user,
+                        text = singleImage.user,
                         modifier = Modifier
 
                             .padding(start = 16.dp)
@@ -92,7 +106,8 @@ fun SingleImageScreen(
                         style = MaterialTheme.typography.titleMedium,
                     )
 
-                    GlideImage(
+                    Image(
+                        painter = mainImagePainter,
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.surface)
                             .paint(painterResource(id = R.drawable.gogolook))
@@ -104,15 +119,16 @@ fun SingleImageScreen(
 
                                 height = Dimension.ratio(DIMENSION_RATIO)
                             },
-                        model = hit.largeImageURL,
                         contentDescription = "image content",
                         contentScale = ContentScale.Crop
+
                     )
 
                     if (isLinear) {
 
                         NumberIcon(
                             modifier = Modifier
+                                .padding(end = 16.dp)
                                 .constrainAs(likes) {
                                     top.linkTo(mainImage.bottom, margin = 8.dp)
                                     start.linkTo(downloads.end)
@@ -121,7 +137,7 @@ fun SingleImageScreen(
                                     height = Dimension.ratio(DIMENSION_RATIO)
 
                                 },
-                            number = hit.likes,
+                            number = singleImage.likes,
                             iconId = R.drawable.like_icon
                         )
 
@@ -133,7 +149,7 @@ fun SingleImageScreen(
                                     end.linkTo(likes.start)
                                     height = Dimension.ratio(DIMENSION_RATIO)
                                 },
-                            number = hit.downloads,
+                            number = singleImage.downloads,
                             iconId = R.drawable.download_icon
                         )
 
@@ -146,20 +162,20 @@ fun SingleImageScreen(
                                     end.linkTo(downloads.start)
                                     height = Dimension.ratio(DIMENSION_RATIO)
                                 },
-                            number = hit.comments,
+                            number = singleImage.comments,
                             iconId = R.drawable.comment_icon
                         )
 
                         NumberIcon(
                             modifier = Modifier
-
+                                .padding(start = 16.dp)
                                 .constrainAs(views) {
                                     top.linkTo(likes.top)
                                     start.linkTo(mainImage.start, margin = 16.dp)
                                     end.linkTo(comments.start)
                                     height = Dimension.ratio(DIMENSION_RATIO)
                                 },
-                            number = hit.views,
+                            number = singleImage.views,
                             iconId = R.drawable.view_icon
                         )
 
@@ -167,7 +183,7 @@ fun SingleImageScreen(
                         // when grid layout
                         NumberIcon(
                             modifier = Modifier
-
+                                .padding(end = 16.dp)
                                 .constrainAs(likes) {
                                     top.linkTo(mainImage.bottom, margin = 8.dp)
                                     start.linkTo(comments.end)
@@ -175,7 +191,7 @@ fun SingleImageScreen(
                                     height = Dimension.ratio(DIMENSION_RATIO)
 
                                 },
-                            number = hit.likes,
+                            number = singleImage.likes,
                             iconId = R.drawable.like_icon
                         )
                         NumberIcon(
@@ -185,17 +201,21 @@ fun SingleImageScreen(
                                 end.linkTo(likes.start)
                                 height = Dimension.ratio(DIMENSION_RATIO)
                             },
-                            number = hit.comments,
+                            number = singleImage.comments,
                             iconId = R.drawable.comment_icon
 
                         )
                     }
                 }
-            }
+
         }
     }
 
 
+
+
+fun isValidUrl(url: String): Boolean {
+    return url.startsWith("https")
 }
 
 @Composable

@@ -134,7 +134,11 @@ dependencies {
     val version_glide = "4.15.1"
     implementation("com.github.bumptech.glide:glide:$version_glide")
     kapt("com.github.bumptech.glide:compiler:$version_glide")
-    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation("com.google.accompanist:accompanist-glide:0.14.0")
+
+
+    // Coil
+    implementation("com.google.accompanist:accompanist-coil:0.13.0")
 
 
     // retrofit

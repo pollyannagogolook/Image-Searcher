@@ -1,5 +1,6 @@
 package com.pollyannawu.gogolook.compose.home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,11 +45,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pollyannawu.gogolook.MainViewModel
 import com.pollyannawu.gogolook.compose.paging.SingleImageScreen
 import com.pollyannawu.gogolook.data.dataclass.Hit
+import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,8 +61,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val imagesPagingItems = viewModel.images.collectAsLazyPagingItems()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    val isOnSearch by viewModel.isSearch.collectAsState(initial = false)
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
@@ -66,15 +70,14 @@ fun HomeScreen(
             HomeTopAppBar()
         }
     ) { contentPadding ->
-        HomePagerScreen(
-            imageFlow = viewModel.images,
-            isLinearFlow = viewModel.isLinear,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(contentPadding)
-        )
+
+        if (!isOnSearch) {
+            HomePagerScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+            )
+        }
 
     }
 }
@@ -83,25 +86,32 @@ fun HomeScreen(
 @Composable
 fun HomePagerScreen(
     modifier: Modifier = Modifier,
-    imageFlow: Flow<PagingData<Hit>>,
-    isLinearFlow: Flow<Boolean>
+    viewModel: MainViewModel = hiltViewModel()
 ) {
-    val lazyPagingItems = imageFlow.collectAsLazyPagingItems()
-    val isLinear by isLinearFlow.collectAsState(initial = true)
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(count = lazyPagingItems.itemCount) {
-            lazyPagingItems[it]?.let { hit ->
-                // show each image card
-                SingleImageScreen(
-                    hit = hit,
-                    isLinear = isLinear
-                )
+    val images = viewModel.images.collectAsLazyPagingItems()
+    val isLinear by viewModel.isLinear.collectAsState(initial = true)
+    val isOnSearch by viewModel.isSearch.collectAsState(initial = false)
+
+    if (isOnSearch) {
+        // show loading page
+        Log.i(ITAG, "show loading page")
+        images.refresh()
+    } else {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(count = images.itemCount) {
+                images[it]?.let { hit ->
+                    // show each image card
+                    SingleImageScreen(
+                        hit = hit,
+                        isLinear = isLinear
+                    )
+                }
             }
         }
     }
 
-
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,8 +119,9 @@ private fun HomeTopAppBar(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
-    var text by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
+    var text by rememberSaveable { mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(false) }
+
 
     val suggestions = viewModel.searchSuggestions.collectAsState(initial = emptyList()).value
 
@@ -128,18 +139,15 @@ private fun HomeTopAppBar(
             query = text,
             onQueryChange = {
                 text = it
-
             },
             onSearch = {
-                active = true
-
+                active = false
+                viewModel.turnOnSearch()
+                viewModel.getImagesBySearch(text)
             },
             active = active,
             onActiveChange = {
                 active = it
-//                if (!text.isNullOrEmpty()) {
-//                    viewModel.getImagesBySearch(text)
-//                }
                 viewModel.updateSearchHistorySuggestion(text)
             },
             placeholder = { Text("Let's search images !") },

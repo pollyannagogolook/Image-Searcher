@@ -12,6 +12,7 @@ import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.model.Repository
 import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,6 +49,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _isLinear = MutableStateFlow<Boolean>(true)
     val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
+    private val _isSearch = MutableStateFlow<Boolean>(false)
+    val isSearch: StateFlow<Boolean> = _isSearch.asStateFlow()
+
 
     init {
         getDefaultLayoutByRemoteConfig()
@@ -57,6 +61,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun loadAllImage() {
         viewModelScope.launch {
             try {
+
                 repository.getImageBySearch("").cachedIn(viewModelScope).collect {
                     _images.value = it
                 }
@@ -68,6 +73,15 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         }
     }
 
+    fun turnOnSearch(){
+        _isSearch.value = true
+        _images.value = PagingData.empty()
+    }
+
+    private fun turnOffSearch(){
+        _isSearch.value = false
+    }
+
     private fun getDefaultLayoutByRemoteConfig() {
         viewModelScope.launch {
             _isLinear.value = repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL) == LINEAR
@@ -77,9 +91,11 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun getImagesBySearch(input: String) {
         viewModelScope.launch {
             try {
-                _images.value = null
-                repository.getImageBySearch(query = input).cachedIn(viewModelScope).collect {
+                repository.getImageBySearch(query = input).collect {
+                    Log.i(ITAG, "viewModel: $input")
+
                     _images.value = it
+                    turnOffSearch()
                 }
             } catch (e: Exception) {
               e.printStackTrace()
