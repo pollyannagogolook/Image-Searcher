@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pollyannawu.gogolook.MainViewModel
 import com.pollyannawu.gogolook.compose.home.HomeScreen
+import com.pollyannawu.gogolook.compose.loading.LoadingScreen
 
 @Composable
 fun ImageSearcherApp(

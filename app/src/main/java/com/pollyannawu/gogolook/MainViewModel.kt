@@ -52,6 +52,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _isSearch = MutableStateFlow<Boolean>(false)
     val isSearch: StateFlow<Boolean> = _isSearch.asStateFlow()
 
+    private val _searchText = MutableStateFlow<String>("")
+    val searchText: StateFlow<String> = _searchText.asStateFlow()
 
     init {
         getDefaultLayoutByRemoteConfig()
@@ -77,8 +79,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         _isSearch.value = true
         _images.value = PagingData.empty()
     }
-
-    private fun turnOffSearch(){
+    fun turnOffSearch(){
         _isSearch.value = false
     }
 
@@ -89,14 +90,10 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     fun getImagesBySearch(input: String) {
+        _searchText.value = input
         viewModelScope.launch {
             try {
-                repository.getImageBySearch(query = input).collect {
-                    Log.i(ITAG, "viewModel: $input")
-
-                    _images.value = it
-                    turnOffSearch()
-                }
+                _images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
             } catch (e: Exception) {
               e.printStackTrace()
             }

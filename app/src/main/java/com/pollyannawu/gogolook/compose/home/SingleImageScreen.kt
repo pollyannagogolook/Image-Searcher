@@ -1,4 +1,4 @@
-package com.pollyannawu.gogolook.compose.paging
+package com.pollyannawu.gogolook.compose.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,8 +30,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.coil.rememberCoilPainter
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.data.dataclass.Hit
