@@ -4,6 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,15 +41,16 @@ private const val DIMENSION_RATIO = "1:1"
 
 @Composable
 fun SingleImageScreen(
-    hit: Hit,
     modifier: Modifier = Modifier,
+    hit: Hit,
     isLinear: Boolean = true
 ) {
     Card(
         modifier = Modifier
             .padding(all = 16.dp)
-            .fillMaxSize()
-            .wrapContentHeight(),
+            .fillMaxWidth()
+
+        ,
         shape = RoundedCornerShape(16.dp)
     ) {
 
@@ -63,155 +68,122 @@ fun SingleImageScreen(
             fadeIn = true
         )
 
-        ConstraintLayout {
-
-            // set constraint id
-            val (
-                userImage, userName,
-                mainImage,
-                likes, downloads, comments, views
-            ) = createRefs()
+        Column {
 
             if (isValidUrl(singleImage.userImageURL)) {
 
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
                     Image(
                         painter = userPainter,
                         modifier = Modifier
-
                             .clip(CircleShape)
                             .fillMaxWidth(.15f)
+                            .aspectRatio(1f)
                             .paint(painterResource(id = R.drawable.gogolook))
                             .background(MaterialTheme.colorScheme.surface)
-                            .constrainAs(userImage) {
-                                top.linkTo(parent.top, margin = 16.dp)
-                                start.linkTo(parent.start, margin = 16.dp)
-                                height = Dimension.ratio(DIMENSION_RATIO)
-                            },
+                        ,
                         contentDescription = "user image",
                         contentScale = ContentScale.Crop
                     )
-                }
-
                     Text(
                         text = singleImage.user,
                         modifier = Modifier
-
-                            .padding(start = 16.dp)
-                            .constrainAs(userName) {
-                                start.linkTo(userImage.end)
-                                top.linkTo(userImage.top)
-                                bottom.linkTo(userImage.bottom)
-                            },
+                            .padding(start = 16.dp),
                         style = MaterialTheme.typography.titleMedium,
                     )
-
-                    Image(
-                        painter = mainImagePainter,
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.surface)
-                            .paint(painterResource(id = R.drawable.gogolook))
-                            .fillMaxWidth()
-                            .constrainAs(mainImage) {
-                                top.linkTo(userImage.bottom, margin = 16.dp)
-                                start.linkTo(parent.start, margin = 16.dp)
-                                end.linkTo(parent.end, margin = 16.dp)
-
-                                height = Dimension.ratio(DIMENSION_RATIO)
-                            },
-                        contentDescription = "image content",
-                        contentScale = ContentScale.Crop
-
-                    )
-
-                    if (isLinear) {
-
-                        NumberIcon(
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .constrainAs(likes) {
-                                    top.linkTo(mainImage.bottom, margin = 8.dp)
-                                    start.linkTo(downloads.end)
-
-                                    end.linkTo(mainImage.end, margin = 16.dp)
-                                    height = Dimension.ratio(DIMENSION_RATIO)
-
-                                },
-                            number = singleImage.likes,
-                            iconId = R.drawable.like_icon
-                        )
-
-                        NumberIcon(
-                            modifier = Modifier
-                                .constrainAs(downloads) {
-                                    top.linkTo(likes.top)
-                                    start.linkTo(comments.end)
-                                    end.linkTo(likes.start)
-                                    height = Dimension.ratio(DIMENSION_RATIO)
-                                },
-                            number = singleImage.downloads,
-                            iconId = R.drawable.download_icon
-                        )
-
-                        NumberIcon(
-                            modifier = Modifier
-
-                                .constrainAs(comments) {
-                                    top.linkTo(likes.top)
-                                    start.linkTo(views.end)
-                                    end.linkTo(downloads.start)
-                                    height = Dimension.ratio(DIMENSION_RATIO)
-                                },
-                            number = singleImage.comments,
-                            iconId = R.drawable.comment_icon
-                        )
-
-                        NumberIcon(
-                            modifier = Modifier
-                                .padding(start = 16.dp)
-                                .constrainAs(views) {
-                                    top.linkTo(likes.top)
-                                    start.linkTo(mainImage.start, margin = 16.dp)
-                                    end.linkTo(comments.start)
-                                    height = Dimension.ratio(DIMENSION_RATIO)
-                                },
-                            number = singleImage.views,
-                            iconId = R.drawable.view_icon
-                        )
-
-                    } else {
-                        // when grid layout
-                        NumberIcon(
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .constrainAs(likes) {
-                                    top.linkTo(mainImage.bottom, margin = 8.dp)
-                                    start.linkTo(comments.end)
-                                    end.linkTo(mainImage.end, margin = 16.dp)
-                                    height = Dimension.ratio(DIMENSION_RATIO)
-
-                                },
-                            number = singleImage.likes,
-                            iconId = R.drawable.like_icon
-                        )
-                        NumberIcon(
-                            modifier = Modifier.constrainAs(comments) {
-                                top.linkTo(likes.top)
-                                start.linkTo(mainImage.start, margin = 16.dp)
-                                end.linkTo(likes.start)
-                                height = Dimension.ratio(DIMENSION_RATIO)
-                            },
-                            number = singleImage.comments,
-                            iconId = R.drawable.comment_icon
-
-                        )
-                    }
                 }
 
+
+            }
+
+            Image(
+                painter = mainImagePainter,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .paint(painterResource(id = R.drawable.gogolook))
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                ,
+                contentDescription = "image content",
+                contentScale = ContentScale.Crop
+
+            )
+
+            if (isLinear) {
+
+                Row(
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    NumberIcon(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                        ,
+                        number = singleImage.likes,
+                        iconId = R.drawable.like_icon
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    NumberIcon(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        number = singleImage.downloads,
+                        iconId = R.drawable.download_icon
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    NumberIcon(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        number = singleImage.comments,
+                        iconId = R.drawable.comment_icon
+                    )
+
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    NumberIcon(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        number = singleImage.views,
+                        iconId = R.drawable.view_icon
+                    )
+
+                }
+
+            } else {
+                // when grid layout
+
+                Row {
+                    NumberIcon(
+                        modifier = Modifier
+                            .padding(end = 16.dp),
+                        number = singleImage.likes,
+                        iconId = R.drawable.like_icon
+                    )
+                    NumberIcon(
+                        modifier = Modifier,
+                        number = singleImage.comments,
+                        iconId = R.drawable.comment_icon
+
+                    )
+                }
+            }
         }
+
     }
-
-
+}
 
 
 fun isValidUrl(url: String): Boolean {
@@ -222,21 +194,22 @@ fun isValidUrl(url: String): Boolean {
 fun NumberIcon(modifier: Modifier, number: Int, iconId: Int) {
 
     Column(
-        modifier.wrapContentWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val numberText = getNumberText(number)
         Text(
             text = numberText,
-            modifier = modifier,
+            modifier = Modifier
+                .wrapContentWidth()
+                .padding(top = 8.dp),
             style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = "icon",
             modifier = Modifier
-                .fillMaxSize(0.3f)
+                .fillMaxSize(0.1f)
                 .padding(top = 8.dp)
         )
     }
@@ -248,7 +221,7 @@ fun getNumberText(number: Int): String {
         val quotient = number / 1000
         val reminders = (number % 1000) / 100
         "${quotient}.${reminders}k"
-    } else if(number > 999999) {
+    } else if (number > 999999) {
         val quotient = number / 1000000
         val reminders = (number % 1000000) / 100000
         "${quotient}.${reminders}m"
