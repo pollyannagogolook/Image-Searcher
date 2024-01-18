@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _isLinear = MutableStateFlow<Boolean>(true)
     val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
-    private val _isSearch = MutableStateFlow<Boolean>(false)
+    private val _isSearch = MutableStateFlow<Boolean>(true)
     val isSearch: StateFlow<Boolean> = _isSearch.asStateFlow()
 
     private val _searchText = MutableStateFlow<String>("")

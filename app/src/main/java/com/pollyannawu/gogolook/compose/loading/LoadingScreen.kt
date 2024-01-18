@@ -57,7 +57,7 @@ fun LoadingScreen(
             color = MaterialTheme.colorScheme.primary,
             strokeWidth = 5.dp
         )
-        Text(text = "Pleasing wait, we are searching for $searchText")
+        Text(text = "Pleasing wait, we are searching your images...")
 
     }
 
