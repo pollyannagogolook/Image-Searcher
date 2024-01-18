@@ -24,7 +24,6 @@ class ImagePagingSource (
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Hit> {
-        Log.i(ITAG, "start to load in PagingSource: ${params.key}, ${params.loadSize}")
         val page = params.key ?: STARTING_PAGE_INDEX
         return try {
             val response = service.searchImages(
@@ -37,22 +36,17 @@ class ImagePagingSource (
             val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
             val nextKey = if (photos.isEmpty()) null else page + (params.loadSize / 20)
 
-            Log.i(ITAG, "pageSource: $page, page size: ${params.loadSize}, load size: ${photos.size}, page: $page, prevKey: $prevKey, nextKey: $nextKey")
-
             LoadResult.Page(
                 data = photos,
                 prevKey = prevKey,
                 nextKey = nextKey
             )
         } catch (exception: Exception) {
-            Log.i(ITAG, "exception: $exception")
             LoadResult.Error(exception)
         }
     }
 
     override fun getRefreshKey(state: PagingState<Int, Hit>): Int? {
-
-        Log.i(ITAG, "getRefreshKey: ${state.anchorPosition}")
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey
         }

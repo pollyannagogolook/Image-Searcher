@@ -11,7 +11,7 @@ import dagger.hilt.EntryPoint
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class SearchHistoryDataSource @Inject constructor(private val app: Application) {
 
     fun updateSearchHistorySuggestion(query: String): Cursor? {

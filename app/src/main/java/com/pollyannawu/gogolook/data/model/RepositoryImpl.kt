@@ -27,8 +27,6 @@ class RepositoryImpl @Inject constructor(
         return remoteConfigRepository.getDefaultLayout(key, fallback)
     }
 
-
-
     override fun updateSearchHistorySuggestion(query: String): Cursor?{
         return searchHistoryRepository.updateSearchHistorySuggestion(query)
     }
