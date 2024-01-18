@@ -5,7 +5,7 @@ import android.database.Cursor
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class SearchHistoryRepository @Inject constructor(private val searchHistoryDataSource: SearchHistoryDataSource){
     fun saveSearchQuery(query: String){
         searchHistoryDataSource.saveSearchQuery(query)

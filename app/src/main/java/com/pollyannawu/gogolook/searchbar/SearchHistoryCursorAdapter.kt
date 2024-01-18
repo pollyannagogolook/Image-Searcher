@@ -11,8 +11,7 @@ import android.widget.CursorAdapter
 import android.widget.ListAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.pollyannawu.gogolook.ImageAdapter
-import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
+
 import com.pollyannawu.gogolook.databinding.SearchHistoryViewholderBinding
 
 class SearchHistoryCursorAdapter(private var cursor: Cursor, private val onClickListener: OnClickListener) :
