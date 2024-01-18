@@ -27,14 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.data.dataclass.Hit
 
-private const val DIMENSION_RATIO = "1:1"
 
 
 @Composable
@@ -44,11 +45,7 @@ fun SingleImageScreen(
     isLinear: Boolean = true
 ) {
     Card(
-        modifier = Modifier
-            .padding(all = 16.dp)
-            .fillMaxWidth()
-
-        ,
+        modifier = modifier,
         shape = RoundedCornerShape(16.dp)
     ) {
 
@@ -56,140 +53,111 @@ fun SingleImageScreen(
             mutableStateOf(hit)
         }
 
-        val userPainter = rememberCoilPainter(
-            request = singleImage.userImageURL,
-            fadeIn = true
-        )
-
         val mainImagePainter = rememberCoilPainter(
             request = singleImage.largeImageURL,
             fadeIn = true
         )
 
+
         Column {
-
-            if (isValidUrl(singleImage.userImageURL)) {
-
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Image(
-                        painter = userPainter,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .fillMaxWidth(.15f)
-                            .aspectRatio(1f)
-                            .paint(painterResource(id = R.drawable.gogolook))
-                            .background(MaterialTheme.colorScheme.surface)
-                        ,
-                        contentDescription = "user image",
-                        contentScale = ContentScale.Crop
-                    )
-                    Text(
-                        text = singleImage.user,
-                        modifier = Modifier
-                            .padding(start = 16.dp),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-
-
-            }
-
-            Image(
-                painter = mainImagePainter,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .paint(painterResource(id = R.drawable.gogolook))
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                ,
-                contentDescription = "image content",
-                contentScale = ContentScale.Crop
-
+            UserInfoComposable(singleImage = singleImage)
+            MainImageComposable(mainImagePainter)
+            ActionRowComposable(
+                singleImage = singleImage,
+                isLinear = isLinear
             )
+        }
+    }
+}
 
-            if (isLinear) {
+@Composable
+fun MainImageComposable(painter: Painter, modifier: Modifier = Modifier) {
 
-                Row(
-                    modifier = Modifier
-                        .padding(all = 16.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    NumberIcon(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                        ,
-                        number = singleImage.likes,
-                        iconId = R.drawable.like_icon
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    NumberIcon(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        number = singleImage.downloads,
-                        iconId = R.drawable.download_icon
-                    )
+    Image(
+        painter = painter,
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .background(MaterialTheme.colorScheme.surface)
+            .paint(painterResource(id = R.drawable.gogolook))
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        contentDescription = "image content",
+        contentScale = ContentScale.Crop
 
-                    Spacer(modifier = Modifier.weight(1f))
+    )
+}
 
-                    NumberIcon(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        number = singleImage.comments,
-                        iconId = R.drawable.comment_icon
-                    )
+@Composable
+fun UserInfoComposable(
+    singleImage: Hit,
+    modifier: Modifier = Modifier
+) {
 
+    val userPainter = rememberCoilPainter(
+        request = singleImage.userImageURL,
+        fadeIn = true
+    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
 
-                    Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = userPainter,
+            modifier = Modifier
+                .padding(all = 8.dp)
+                .clip(CircleShape)
+                .fillMaxWidth(.15f)
+                .aspectRatio(1f)
+                .paint(painterResource(id = R.drawable.gogolook))
+                .background(MaterialTheme.colorScheme.surface),
+            contentDescription = "user image",
+            contentScale = ContentScale.Crop
+        )
+        Text(
+            text = singleImage.user,
+            modifier = Modifier
+                .padding(start = 16.dp),
+            style = MaterialTheme.typography.titleMedium,
+        )
+    }
+}
 
-                    NumberIcon(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        number = singleImage.views,
-                        iconId = R.drawable.view_icon
-                    )
-
-                }
-
-            } else {
-                // when grid layout
-
-                Row {
-                    NumberIcon(
-                        modifier = Modifier
-                            .padding(end = 16.dp),
-                        number = singleImage.likes,
-                        iconId = R.drawable.like_icon
-                    )
-                    NumberIcon(
-                        modifier = Modifier,
-                        number = singleImage.comments,
-                        iconId = R.drawable.comment_icon
-
-                    )
-                }
-            }
+@Composable
+fun ActionRowComposable(singleImage: Hit, isLinear: Boolean) {
+    Row(
+        modifier = Modifier
+            .padding(all = 16.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        if (!isLinear) {
+            Spacer(modifier = Modifier.weight(1f)) // Spacer before the first icon
         }
 
+        NumberIconComposable(number = singleImage.likes, iconId = R.drawable.like_icon)
+
+        if (!isLinear) {
+            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
+        } else {
+            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
+            NumberIconComposable(number = singleImage.downloads, iconId = R.drawable.download_icon)
+            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
+        }
+
+        NumberIconComposable(number = singleImage.comments, iconId = R.drawable.comment_icon)
+
+        if (!isLinear) {
+            Spacer(modifier = Modifier.weight(1f)) // Spacer after the last icon
+        } else {
+            Spacer(modifier = Modifier.weight(1f))
+            NumberIconComposable(number = singleImage.views, iconId = R.drawable.view_icon)
+        }
     }
 }
 
 
-fun isValidUrl(url: String): Boolean {
-    return url.startsWith("https")
-}
-
 @Composable
-fun NumberIcon(modifier: Modifier, number: Int, iconId: Int) {
+fun NumberIconComposable(modifier: Modifier = Modifier, number: Int, iconId: Int) {
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -229,34 +197,34 @@ fun getNumberText(number: Int): String {
 }
 
 
-//@Preview
-//@Composable
-//fun previewLinearImageScreen() {
-//
-//    val fakeHit: Hit = Hit(
-//        id = 1,
-//        pageURL = "https://example.com/page/1",
-//        type = "photo",
-//        tags = "nature, outdoors",
-//        previewURL = "https://example.com/images/preview/1.jpg",
-//        previewWidth = 320,
-//        previewHeight = 240,
-//        webformatURL = "https://example.com/images/webformat/1.jpg",
-//        webformatWidth = 1024,
-//        webformatHeight = 768,
-//        largeImageURL = "https://example.com/images/large/1.jpg",
-//        imageWidth = 2048,
-//        imageHeight = 1536,
-//        imageSize = 1024 * 1024,
-//        views = 1000,
-//        downloads = 500,
-//        collections = 50,
-//        likes = 300,
-//        comments = 100,
-//        userId = 101,
-//        user = "John Doe",
-//        userImageURL = "https://example.com/users/johndoe.jpg"
-//    )
-//
-//    SingleImageScreen(hit = fakeHit, isLinear = true)
-//}
+@Preview
+@Composable
+fun previewLinearImageScreen() {
+
+    val fakeHit: Hit = Hit(
+        id = 1,
+        pageURL = "https://example.com/page/1",
+        type = "photo",
+        tags = "nature, outdoors",
+        previewURL = "https://example.com/images/preview/1.jpg",
+        previewWidth = 320,
+        previewHeight = 240,
+        webformatURL = "https://example.com/images/webformat/1.jpg",
+        webformatWidth = 1024,
+        webformatHeight = 768,
+        largeImageURL = "https://example.com/images/large/1.jpg",
+        imageWidth = 2048,
+        imageHeight = 1536,
+        imageSize = 1024 * 1024,
+        views = 1000,
+        downloads = 500,
+        collections = 50,
+        likes = 300,
+        comments = 100,
+        userId = 101,
+        user = "John Doe",
+        userImageURL = "https://example.com/users/johndoe.jpg"
+    )
+
+    SingleImageScreen(hit = fakeHit, isLinear = true)
+}
