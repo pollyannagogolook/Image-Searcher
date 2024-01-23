@@ -1,30 +1,37 @@
 package com.pollyannawu.gogolook.data.model
 
 import android.database.Cursor
+import androidx.paging.PagingData
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.dataclass.Result
+import com.pollyannawu.gogolook.data.model.image_search.ImageRepository
+import com.pollyannawu.gogolook.data.model.remote_config.RemoteConfigRepository
+import com.pollyannawu.gogolook.data.model.search_history.SearchHistoryRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource): Repository{
-    override suspend fun getAllImages(): Result<List<Hit>> {
-        return remoteDataSource.getAllImages()
+class RepositoryImpl @Inject constructor(
+    private val imageRepository: ImageRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val searchHistoryRepository: SearchHistoryRepository): Repository{
+
+
+
+    override suspend fun getImageBySearch(query: String): Flow<PagingData<Hit>> {
+        return imageRepository.getImageBySearch(query)
     }
 
-    override fun getDefaultLayoutByRemoteConfig(defaultLayoutCallback: (String) -> Unit) {
-        remoteDataSource.getDefaultLayoutByRemoteConfig(defaultLayoutCallback)
+    override fun getDefaultLayoutByRemoteConfig(key: String, fallback: String) : String{
+        return remoteConfigRepository.getDefaultLayout(key, fallback)
     }
 
-    override suspend fun getImagesFromPixabayAPI(input: String): Result<List<Hit>> {
-        return remoteDataSource.getImagesFromPixabayAPI(input)
-    }
-
-    override fun updateSearchHistorySuggestion(query: String): Cursor? {
-       return remoteDataSource.updateSearchHistorySuggestion(query)
+    override fun updateSearchHistorySuggestion(query: String): Cursor?{
+        return searchHistoryRepository.updateSearchHistorySuggestion(query)
     }
 
     override fun saveSearchQuery(query: String) {
-        remoteDataSource.saveSearchQuery(query)
+        searchHistoryRepository.saveSearchQuery(query)
     }
 }

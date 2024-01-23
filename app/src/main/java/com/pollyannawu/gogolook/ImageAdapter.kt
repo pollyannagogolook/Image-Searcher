@@ -1,108 +1,101 @@
 package com.pollyannawu.gogolook
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginEnd
+import androidx.paging.PagingData
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pollyannawu.gogolook.data.dataclass.Hit
-import com.pollyannawu.gogolook.databinding.ImageViewholderBinding
-import kotlinx.coroutines.flow.SharingCommand
+import com.pollyannawu.gogolook.data.dataclass.ImageLayoutType
+import com.pollyannawu.gogolook.databinding.ImageGridViewholderBinding
+import com.pollyannawu.gogolook.databinding.ImageLinearViewholderBinding
 
-class ImageAdapter(private val isLinear: Boolean) :
-    ListAdapter<Hit, ImageAdapter.ImageViewHolder>(DiffCallback) {
 
-    class ImageViewHolder(private val binding: ImageViewholderBinding) :
+class ImageAdapter: PagingDataAdapter<ImageLayoutType, RecyclerView.ViewHolder>(DiffCallback()) {
+
+
+    companion object{
+        const val VIEW_TYPE_LINEAR = 0
+        const val VIEW_TYPE_GRID = 1
+        const val INVALID_VIEW_TYPE = "invalid view type"
+    }
+
+
+    class LinearViewHolder(private val binding: ImageLinearViewholderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(hit: Hit, isLinear: Boolean) {
+        fun bind(hit: Hit) {
             binding.hit = hit
-            if (!isLinear) {
-                binding.downloadNumber.visibility = View.GONE
-                binding.downloadIcon.visibility = View.GONE
-
-                binding.viewNumber.visibility = View.GONE
-                binding.viewIcon.visibility = View.GONE
-
-                centerItems(binding.commentNumber, binding.likeNumber)
-
-            }
-
             binding.executePendingBindings()
         }
 
-        private fun centerItems(commentView: View, likeView: View) {
+    }
 
-            val constraintLayout = commentView.parent as ConstraintLayout
-
-            // set comment and like margin as 0
-            val commentLayoutParams = commentView.layoutParams as ConstraintLayout.LayoutParams
-            commentLayoutParams.marginEnd = 0
-
-            val likeLayoutParams = likeView.layoutParams as ConstraintLayout.LayoutParams
-            likeLayoutParams.marginEnd = 0
-
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(constraintLayout)
-
-
-            // constraint to start and end of parent
-            constraintSet.connect(
-                commentView.id, ConstraintSet.START,
-                ConstraintSet.PARENT_ID, ConstraintSet.START
-            )
-            constraintSet.connect(
-                likeView.id, ConstraintSet.START,
-                commentView.id, ConstraintSet.END
-            )
-
-
-            // constraint to start and end of each other
-            constraintSet.connect(
-                commentView.id, ConstraintSet.END,
-                likeView.id, ConstraintSet.START
-            )
-
-            constraintSet.connect(
-                likeView.id, ConstraintSet.END,
-                ConstraintSet.PARENT_ID, ConstraintSet.END
-            )
-            constraintSet.applyTo(constraintLayout)
-
+    class GridViewHolder(private val binding: ImageGridViewholderBinding): RecyclerView.ViewHolder(binding.root){
+        fun bind(hit: Hit){
+            binding.hit = hit
+            binding.executePendingBindings()
         }
-
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        return ImageViewHolder(
-            ImageViewholderBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bind(getItem(position), isLinear)
-
     }
 
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Hit>() {
-        override fun areItemsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder{
+        return when (viewType) {
+            VIEW_TYPE_LINEAR -> {
+                val binding = ImageLinearViewholderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                LinearViewHolder(binding)
+            }
+            VIEW_TYPE_GRID -> {
+                val binding = ImageGridViewholderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                GridViewHolder(binding)
+            }
+
+            else -> throw IllegalArgumentException(INVALID_VIEW_TYPE)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when(getItem(position)){
+            is ImageLayoutType.LinearImage -> VIEW_TYPE_LINEAR
+            is ImageLayoutType.GridImage -> VIEW_TYPE_GRID
+            else -> throw IllegalArgumentException(INVALID_VIEW_TYPE)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val imageLayoutType = getItem(position)
+
+        when (imageLayoutType){
+            is ImageLayoutType.LinearImage -> (holder as LinearViewHolder).bind(imageLayoutType.data)
+            is ImageLayoutType.GridImage -> (holder as GridViewHolder).bind(imageLayoutType.data)
+            else -> throw IllegalArgumentException(INVALID_VIEW_TYPE)
+        }
+    }
+
+
+
+
+
+    class DiffCallback : DiffUtil.ItemCallback<ImageLayoutType>() {
+        override fun areItemsTheSame(oldItem: ImageLayoutType, newItem: ImageLayoutType): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Hit, newItem: Hit): Boolean {
-            return oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: ImageLayoutType, newItem: ImageLayoutType): Boolean {
+            return when (oldItem){
+                is ImageLayoutType.LinearImage -> oldItem.data.id == (newItem as ImageLayoutType.LinearImage).data.id
+                is ImageLayoutType.GridImage -> oldItem.data.id == (newItem as ImageLayoutType.GridImage).data.id
+            }
         }
     }
 }

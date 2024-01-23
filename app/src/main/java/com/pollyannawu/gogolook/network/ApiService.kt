@@ -18,8 +18,10 @@ interface ApiService {
     suspend fun searchImages (
         @Query("key")apiKey: String = BuildConfig.API_KEY,
         @Query("q")input: String,
-        @Query("image_type")imageType: String = "photo"
-    ): Response<ApiResponse>
+        @Query("image_type")imageType: String = "photo",
+        @Query("page")page: Int,
+        @Query("per_page")per_page: Int
+    ): ApiResponse
 }
 
 /**
