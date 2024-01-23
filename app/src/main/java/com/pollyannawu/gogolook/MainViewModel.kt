@@ -1,31 +1,16 @@
 package com.pollyannawu.gogolook
 
 import android.app.SearchManager
-import android.database.Cursor
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.model.Repository
-import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -102,8 +87,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
 
-    fun updateSearchHistorySuggestion(query: String) {
-        val searchHistoryCursor = repository.updateSearchHistorySuggestion(query)
+    fun getSearchHistorySuggestion(query: String) {
+        val searchHistoryCursor = repository.getSearchHistorySuggestion(query)
         val list = ArrayList<String>()
 
         // transfer cursor content to list
@@ -124,7 +109,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         repository.saveSearchQuery(query)
     }
 
-    fun toggleLayout() {
+    fun changeLayout() {
         isLinear.value = !isLinear.value
     }
 }

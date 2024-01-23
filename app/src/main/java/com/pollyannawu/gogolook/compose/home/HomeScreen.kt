@@ -1,11 +1,9 @@
 package com.pollyannawu.gogolook.compose.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,32 +25,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.google.firebase.components.Lazy
 import com.pollyannawu.gogolook.MainViewModel
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.compose.loading.LoadingView
 import com.pollyannawu.gogolook.data.dataclass.Hit
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
@@ -93,17 +83,18 @@ fun HomeScreen(
                     .padding(vertical = 8.dp, horizontal = 16.dp)
                     .semantics { traversalIndex = 1f }
                 ,
-                turnOnSearch = {},
+                turnOnSearch = {viewModel.turnOnSearch()},
                 historySuggestion = { historySuggestion },
                 getImageBySearch = { text -> viewModel.getImagesBySearch(text) },
-                showSearchSuggestion = { query -> viewModel.updateSearchHistorySuggestion(query) }
+                showSearchSuggestion = { query -> viewModel.getSearchHistorySuggestion(query) },
+                saveSearchHistory = { query -> viewModel.saveSearchQuery(query) }
             )
             LayoutToggleButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 isLinear = isLinear,
-                toggleLayout = { viewModel.toggleLayout() }
+                toggleLayout = { viewModel.changeLayout() }
             )
             if (!isOnSearch) {
                 HomePagerView(
@@ -213,6 +204,7 @@ private fun SearchBar(
     historySuggestion: () -> List<String>,
     getImageBySearch: (String) -> Unit,
     showSearchSuggestion: (String) -> Unit,
+    saveSearchHistory: (String) -> Unit
 ) {
     var text by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
@@ -222,11 +214,13 @@ private fun SearchBar(
         query = text,
         onQueryChange = {
             text = it
+            showSearchSuggestion(it)
         },
         onSearch = {
             active = false
             turnOnSearch()
             getImageBySearch(text)
+            saveSearchHistory(text)
         },
         active = active,
         onActiveChange = {
@@ -263,6 +257,7 @@ private fun SearchBar(
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                         .clickable {
+                            active = false
                             text = historySuggestion()[index]
                             turnOnSearch()
                             getImageBySearch(text)
