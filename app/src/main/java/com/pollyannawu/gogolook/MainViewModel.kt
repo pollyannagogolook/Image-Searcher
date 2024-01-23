@@ -60,7 +60,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         loadAllImage()
     }
 
-    fun loadAllImage() {
+    private fun loadAllImage() {
         viewModelScope.launch {
             try {
 
@@ -77,7 +77,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun turnOnSearch(){
         _isSearch.value = true
-        _images.value = PagingData.empty()
+//        _images.value = PagingData.empty()
     }
     fun turnOffSearch(){
         _isSearch.value = false
@@ -106,7 +106,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         val list = ArrayList<String>()
 
         // transfer cursor content to list
-        searchHistoryCursor?.let { cursor ->
+        searchHistoryCursor?.use { cursor ->
             while (cursor.moveToNext()) {
                 list.add(
                     cursor.getString(

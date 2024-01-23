@@ -1,7 +1,5 @@
 package com.pollyannawu.gogolook.compose.home
 
-import android.util.Log
-import android.widget.ToggleButton
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -43,19 +40,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pollyannawu.gogolook.MainViewModel
 import com.pollyannawu.gogolook.R
-import com.pollyannawu.gogolook.compose.loading.LoadingScreen
-import com.pollyannawu.gogolook.data.model.image_search.ITAG
+import com.pollyannawu.gogolook.compose.loading.LoadingView
 
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel
 ) {
 
     val isOnSearch by viewModel.isSearch.collectAsState(initial = false)
@@ -74,13 +68,13 @@ fun HomeScreen(
             )
             LayoutToggleButton()
             if (!isOnSearch) {
-                HomePagerScreen(
+                HomePagerView(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding)
                 )
             } else {
-                LoadingScreen(
+                LoadingView(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding)
@@ -93,7 +87,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomePagerScreen(
+fun HomePagerView(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
 ) {
@@ -114,7 +108,7 @@ fun HomePagerScreen(
                 items(count = images.itemCount) {
                     images[it]?.let { hit ->
                         // show each image card
-                        SingleImageScreen(
+                        SingleImageView(
                             hit = hit,
                             isLinear = isLinear,
                             modifier = Modifier
@@ -126,11 +120,12 @@ fun HomePagerScreen(
             }
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2)) {
+                columns = GridCells.Fixed(2)
+            ) {
                 items(count = images.itemCount) {
                     images[it]?.let { hit ->
                         // show each image card
-                        SingleImageScreen(
+                        SingleImageView(
                             hit = hit,
                             isLinear = isLinear,
                             modifier = Modifier

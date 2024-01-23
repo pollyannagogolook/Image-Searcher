@@ -39,7 +39,7 @@ import com.pollyannawu.gogolook.data.dataclass.Hit
 
 
 @Composable
-fun SingleImageScreen(
+fun SingleImageView(
     modifier: Modifier = Modifier,
     hit: Hit,
     isLinear: Boolean = true
@@ -60,9 +60,9 @@ fun SingleImageScreen(
 
 
         Column {
-            UserInfoComposable(singleImage = singleImage)
-            MainImageComposable(mainImagePainter)
-            ActionRowComposable(
+            UserInfoView(singleImage = singleImage)
+            MainImageView(mainImagePainter)
+            ActionRowView(
                 singleImage = singleImage,
                 isLinear = isLinear
             )
@@ -71,7 +71,7 @@ fun SingleImageScreen(
 }
 
 @Composable
-fun MainImageComposable(painter: Painter, modifier: Modifier = Modifier) {
+fun MainImageView(painter: Painter, modifier: Modifier = Modifier) {
 
     Image(
         painter = painter,
@@ -88,7 +88,7 @@ fun MainImageComposable(painter: Painter, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun UserInfoComposable(
+fun UserInfoView(
     singleImage: Hit,
     modifier: Modifier = Modifier
 ) {
@@ -123,7 +123,7 @@ fun UserInfoComposable(
 }
 
 @Composable
-fun ActionRowComposable(singleImage: Hit, isLinear: Boolean) {
+fun ActionRowView(singleImage: Hit, isLinear: Boolean) {
     Row(
         modifier = Modifier
             .padding(all = 16.dp)
@@ -134,30 +134,30 @@ fun ActionRowComposable(singleImage: Hit, isLinear: Boolean) {
             Spacer(modifier = Modifier.weight(1f)) // Spacer before the first icon
         }
 
-        NumberIconComposable(number = singleImage.likes, iconId = R.drawable.like_icon)
+        NumberIconView(number = singleImage.likes, iconId = R.drawable.like_icon)
 
         if (!isLinear) {
             Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
         } else {
             Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-            NumberIconComposable(number = singleImage.downloads, iconId = R.drawable.download_icon)
+            NumberIconView(number = singleImage.downloads, iconId = R.drawable.download_icon)
             Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
         }
 
-        NumberIconComposable(number = singleImage.comments, iconId = R.drawable.comment_icon)
+        NumberIconView(number = singleImage.comments, iconId = R.drawable.comment_icon)
 
         if (!isLinear) {
             Spacer(modifier = Modifier.weight(1f)) // Spacer after the last icon
         } else {
             Spacer(modifier = Modifier.weight(1f))
-            NumberIconComposable(number = singleImage.views, iconId = R.drawable.view_icon)
+            NumberIconView(number = singleImage.views, iconId = R.drawable.view_icon)
         }
     }
 }
 
 
 @Composable
-fun NumberIconComposable(modifier: Modifier = Modifier, number: Int, iconId: Int) {
+fun NumberIconView(modifier: Modifier = Modifier, number: Int, iconId: Int) {
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -199,7 +199,7 @@ fun getNumberText(number: Int): String {
 
 @Preview
 @Composable
-fun previewLinearImageScreen() {
+fun previewLinearImageView() {
 
     val fakeHit: Hit = Hit(
         id = 1,
@@ -226,5 +226,5 @@ fun previewLinearImageScreen() {
         userImageURL = "https://example.com/users/johndoe.jpg"
     )
 
-    SingleImageScreen(hit = fakeHit, isLinear = true)
+    SingleImageView(hit = fakeHit, isLinear = true)
 }
