@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -63,7 +62,7 @@ fun SingleImageView(
             UserInfoView(
                 singleImage = singleImage,
                 modifier = Modifier
-                    .padding( 16.dp)
+                    .padding(16.dp)
                     .fillMaxWidth()
 
             )
@@ -124,44 +123,92 @@ fun UserInfoView(
             contentDescription = "user image",
             contentScale = ContentScale.Crop
         )
-        Text(
-            text = singleImage.user,
-            modifier = Modifier
-                .padding(start = 16.dp),
-            style = MaterialTheme.typography.titleMedium,
+        LimitedLineText(text = singleImage.user, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun LimitedLineText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.titleMedium,
+        maxLines = 1
+    )
+}
+
+@Composable
+fun ActionRowView(singleImage: Hit, isLinear: Boolean, modifier: Modifier = Modifier) {
+    if (isLinear) {
+        LinearActionRow(
+            singleImage = singleImage,
+            modifier = modifier
+        )
+    } else {
+        GridActionRow(
+            singleImage = singleImage,
+            modifier = modifier
         )
     }
 }
 
 @Composable
-fun ActionRowView(singleImage: Hit, isLinear: Boolean, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-    ) {
-        if (!isLinear) {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer before the first icon
-        }
+fun LinearActionRow(singleImage: Hit, modifier: Modifier = Modifier){
+    Row(modifier = modifier) {
+        NumberIconView(
+            number = 100,
+            iconId = R.drawable.like_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
 
-        NumberIconView(number = singleImage.likes, iconId = R.drawable.like_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
+        NumberIconView(
+            number = singleImage.downloads,
+            iconId = R.drawable.download_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
 
-        if (!isLinear) {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-        } else {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-            NumberIconView(number = singleImage.downloads, iconId = R.drawable.download_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
-            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-        }
+        NumberIconView(
+            number = singleImage.comments,
+            iconId = R.drawable.comment_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.weight(1f))
 
-        NumberIconView(number = singleImage.comments, iconId = R.drawable.comment_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
-
-        if (!isLinear) {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer after the last icon
-        } else {
-            Spacer(modifier = Modifier.weight(1f))
-            NumberIconView(
-                number = singleImage.views, iconId = R.drawable.view_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
-        }
+        NumberIconView(
+            number = singleImage.views,
+            iconId = R.drawable.view_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
     }
+}
+
+@Composable
+fun GridActionRow(singleImage: Hit, modifier: Modifier){
+    Row(modifier = modifier) {
+
+        NumberIconView(
+            number = singleImage.likes,
+            iconId = R.drawable.like_icon, modifier = Modifier
+                .weight(1f)
+                .padding(top = 8.dp)
+        )
+
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+
+        NumberIconView(number = singleImage.comments, iconId = R.drawable.comment_icon, modifier = Modifier
+            .weight(1f)
+            .padding(top = 8.dp))
+
+    }
+
 }
 
 
@@ -176,22 +223,20 @@ fun NumberIconView(modifier: Modifier = Modifier, number: Int, iconId: Int) {
         val numberText = getNumberText(number)
         Text(
             text = numberText,
-            modifier = Modifier
-                .fillMaxWidth() ,
             style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = "icon",
             modifier = Modifier
-                .fillMaxSize(0.8f)
+                .fillMaxSize(0.5f)
                 .padding(top = 8.dp)
         )
     }
 
 }
 
-fun getNumberText(number: Int): String {
+private fun getNumberText(number: Int): String {
     return if (number in 1000..999999) {
         val quotient = number / 1000
         val reminders = (number % 1000) / 100

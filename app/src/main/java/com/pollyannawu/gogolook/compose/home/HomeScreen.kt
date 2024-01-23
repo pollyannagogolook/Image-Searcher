@@ -65,7 +65,7 @@ fun HomeScreen(
     }
 
     // use in home pager view
-    val lazyPagerItems = LazyPagingContent(pagingFlow = viewModel.images)
+    val lazyPagerItems = lazyPagingContent(pagingFlow = viewModel.images)
 
 
     Scaffold(
@@ -109,7 +109,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
-                    turnOffSearch = { viewModel.turnOffSearch() }
+                    turnOffSearch = { viewModel.turnOffSearch() },
                 )
             }
         }
@@ -134,7 +134,7 @@ fun HomePagerView(
                 images[index]?.let { hit ->
                     SingleImageView(
                         hit = hit,
-                        isLinear = isLinear,
+                        isLinear = true,
                         modifier = Modifier
                             .fillMaxWidth(widthByLayout)
                             .padding(all = 16.dp)
@@ -144,16 +144,19 @@ fun HomePagerView(
         }
     } else {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2)
+            columns = GridCells.Fixed(2),
+            modifier = modifier
         ) {
             items(count = images.itemCount) { index ->
                 images[index]?.let { hit ->
                     // show each image card
                     SingleImageView(
                         hit = hit,
-                        isLinear = isLinear,
+                        isLinear = false,
                         modifier = Modifier
                             .fillMaxWidth(widthByLayout)
+                            .wrapContentHeight()
+                            .padding(all = 8.dp)
                     )
                 }
             }
@@ -162,7 +165,7 @@ fun HomePagerView(
 }
 
 @Composable
-fun LazyPagingContent(pagingFlow: MutableStateFlow<PagingData<Hit>>): LazyPagingItems<Hit> {
+private fun lazyPagingContent(pagingFlow: MutableStateFlow<PagingData<Hit>>): LazyPagingItems<Hit> {
     return pagingFlow.collectAsLazyPagingItems()
 }
 
@@ -206,8 +209,8 @@ private fun SearchBar(
     showSearchSuggestion: (String) -> Unit,
     saveSearchHistory: (String) -> Unit
 ) {
-    var text by rememberSaveable { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
 
     DockedSearchBar(
         modifier = modifier,
