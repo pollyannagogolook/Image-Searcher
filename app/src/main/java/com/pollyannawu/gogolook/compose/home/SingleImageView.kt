@@ -60,11 +60,28 @@ fun SingleImageView(
 
 
         Column {
-            UserInfoView(singleImage = singleImage)
-            MainImageView(mainImagePainter)
+            UserInfoView(
+                singleImage = singleImage,
+                modifier = Modifier
+                    .padding( 16.dp)
+                    .fillMaxWidth()
+
+            )
+            MainImageView(
+                painter = mainImagePainter,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
             ActionRowView(
                 singleImage = singleImage,
-                isLinear = isLinear
+                isLinear = isLinear,
+                modifier = Modifier
+                    .padding(all = 16.dp)
+                    .fillMaxWidth()
+                    .wrapContentHeight()
             )
         }
     }
@@ -75,15 +92,9 @@ fun MainImageView(painter: Painter, modifier: Modifier = Modifier) {
 
     Image(
         painter = painter,
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .background(MaterialTheme.colorScheme.surface)
-            .paint(painterResource(id = R.drawable.gogolook))
-            .fillMaxWidth()
-            .aspectRatio(1f),
+        modifier = modifier.paint(painterResource(id = R.drawable.gogolook)),
         contentDescription = "image content",
         contentScale = ContentScale.Crop
-
     )
 }
 
@@ -98,13 +109,13 @@ fun UserInfoView(
         fadeIn = true
     )
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Image(
             painter = userPainter,
             modifier = Modifier
-                .padding(all = 8.dp)
                 .clip(CircleShape)
                 .fillMaxWidth(.15f)
                 .aspectRatio(1f)
@@ -123,34 +134,32 @@ fun UserInfoView(
 }
 
 @Composable
-fun ActionRowView(singleImage: Hit, isLinear: Boolean) {
+fun ActionRowView(singleImage: Hit, isLinear: Boolean, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
-            .padding(all = 16.dp)
-            .fillMaxWidth()
-            .wrapContentHeight()
+        modifier = modifier
     ) {
         if (!isLinear) {
             Spacer(modifier = Modifier.weight(1f)) // Spacer before the first icon
         }
 
-        NumberIconView(number = singleImage.likes, iconId = R.drawable.like_icon)
+        NumberIconView(number = singleImage.likes, iconId = R.drawable.like_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
 
         if (!isLinear) {
             Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
         } else {
             Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-            NumberIconView(number = singleImage.downloads, iconId = R.drawable.download_icon)
+            NumberIconView(number = singleImage.downloads, iconId = R.drawable.download_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
             Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
         }
 
-        NumberIconView(number = singleImage.comments, iconId = R.drawable.comment_icon)
+        NumberIconView(number = singleImage.comments, iconId = R.drawable.comment_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
 
         if (!isLinear) {
             Spacer(modifier = Modifier.weight(1f)) // Spacer after the last icon
         } else {
             Spacer(modifier = Modifier.weight(1f))
-            NumberIconView(number = singleImage.views, iconId = R.drawable.view_icon)
+            NumberIconView(
+                number = singleImage.views, iconId = R.drawable.view_icon, modifier = Modifier.weight(1f).padding(top = 8.dp))
         }
     }
 }
@@ -160,6 +169,7 @@ fun ActionRowView(singleImage: Hit, isLinear: Boolean) {
 fun NumberIconView(modifier: Modifier = Modifier, number: Int, iconId: Int) {
 
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -167,15 +177,14 @@ fun NumberIconView(modifier: Modifier = Modifier, number: Int, iconId: Int) {
         Text(
             text = numberText,
             modifier = Modifier
-                .wrapContentWidth()
-                .padding(top = 8.dp),
+                .fillMaxWidth() ,
             style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = "icon",
             modifier = Modifier
-                .fillMaxSize(0.1f)
+                .fillMaxSize(0.8f)
                 .padding(top = 8.dp)
         )
     }

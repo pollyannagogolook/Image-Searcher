@@ -89,7 +89,10 @@ fun HomeScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .wrapContentHeight()
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .semantics { traversalIndex = 1f }
+                ,
                 turnOnSearch = {},
                 historySuggestion = { historySuggestion },
                 getImageBySearch = { text -> viewModel.getImagesBySearch(text) },
@@ -98,7 +101,7 @@ fun HomeScreen(
             LayoutToggleButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 isLinear = isLinear,
                 toggleLayout = { viewModel.toggleLayout() }
             )
@@ -115,7 +118,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
-                    turnOffSearch = {viewModel.turnOffSearch()}
+                    turnOffSearch = { viewModel.turnOffSearch() }
                 )
             }
         }
@@ -123,7 +126,7 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+
 @Composable
 fun HomePagerView(
     modifier: Modifier = Modifier,
@@ -135,7 +138,7 @@ fun HomePagerView(
     val widthByLayout = if (isLinear) 1f else 0.5f
 
     if (isLinear) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = modifier) {
             items(count = images.itemCount) { index ->
                 images[index]?.let { hit ->
                     SingleImageView(
@@ -160,7 +163,6 @@ fun HomePagerView(
                         isLinear = isLinear,
                         modifier = Modifier
                             .fillMaxWidth(widthByLayout)
-                            .padding(all = 16.dp)
                     )
                 }
             }
@@ -169,7 +171,7 @@ fun HomePagerView(
 }
 
 @Composable
-fun LazyPagingContent(pagingFlow: MutableStateFlow<PagingData<Hit>>): LazyPagingItems<Hit>{
+fun LazyPagingContent(pagingFlow: MutableStateFlow<PagingData<Hit>>): LazyPagingItems<Hit> {
     return pagingFlow.collectAsLazyPagingItems()
 }
 
@@ -181,8 +183,7 @@ fun LayoutToggleButton(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(vertical = 8.dp)
+        modifier = modifier
     ) {
 
         Image(
@@ -216,81 +217,69 @@ private fun SearchBar(
     var text by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
 
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .semantics { isTraversalGroup = true })
-    {
-        DockedSearchBar(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .align(Alignment.TopCenter)
-                .semantics { traversalIndex = 1f },
-            query = text,
-            onQueryChange = {
-                text = it
-            },
-            onSearch = {
-                active = false
-                turnOnSearch()
-                getImageBySearch(text)
-            },
-            active = active,
-            onActiveChange = {
-                active = it
-                if (it) {
-                    showSearchSuggestion(text)
-                }
-            },
-            placeholder = { Text("Let's search images !") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            trailingIcon = {
-                Icon(
-                    modifier = Modifier.clickable {
-                        if (text.isNotEmpty()) {
-                            text = ""
-                        } else {
-                            active = false
-                        }
-                    },
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "close icon"
-                )
+    DockedSearchBar(
+        modifier = modifier,
+        query = text,
+        onQueryChange = {
+            text = it
+        },
+        onSearch = {
+            active = false
+            turnOnSearch()
+            getImageBySearch(text)
+        },
+        active = active,
+        onActiveChange = {
+            active = it
+            if (it) {
+                showSearchSuggestion(text)
             }
-        ) {
-            // search history
-            LazyColumn(
-                modifier = Modifier
-                    .padding(all = 16.dp)
-                    .wrapContentHeight()
-            ) {
-                items(historySuggestion().size) { index ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable {
-                                text = historySuggestion()[index]
-                                turnOnSearch()
-                                getImageBySearch(text)
-
-                            },
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = historySuggestion()[index])
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = "history icon"
-                        )
+        },
+        placeholder = { Text("Let's search images !") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        trailingIcon = {
+            Icon(
+                modifier = Modifier.clickable {
+                    if (text.isNotEmpty()) {
+                        text = ""
+                    } else {
+                        active = false
                     }
+                },
+                imageVector = Icons.Default.Close,
+                contentDescription = "close icon"
+            )
+        }
+    ) {
+        // search history
+        LazyColumn(
+            modifier = Modifier
+                .padding(all = 16.dp)
+                .wrapContentHeight()
+        ) {
+            items(historySuggestion().size) { index ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .clickable {
+                            text = historySuggestion()[index]
+                            turnOnSearch()
+                            getImageBySearch(text)
+
+                        },
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = historySuggestion()[index])
+                    Icon(
+                        imageVector = Icons.Default.History,
+                        contentDescription = "history icon"
+                    )
                 }
             }
-
-
         }
-
     }
+
 }
 
 
