@@ -24,12 +24,12 @@ import kotlinx.coroutines.delay
 @Composable
 fun LoadingView(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
+    turnOffSearch: () -> Unit
 ) {
     var rotationState by remember {
         mutableStateOf(0f)
     }
-    val searchText = viewModel.searchText.collectAsState().value
+
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -43,7 +43,7 @@ fun LoadingView(
                 isLoading = false
             }
         }
-        viewModel.turnOffSearch()
+        turnOffSearch()
     }
 
     Column(

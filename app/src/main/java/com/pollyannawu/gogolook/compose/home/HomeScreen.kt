@@ -27,9 +27,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,10 +43,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.firebase.components.Lazy
 import com.pollyannawu.gogolook.MainViewModel
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.compose.loading.LoadingView
+import com.pollyannawu.gogolook.data.dataclass.Hit
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @Composable
@@ -51,8 +61,23 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {
+    // use in search bar to show loading page
+    val isOnSearch by remember {
+        viewModel.isSearch
+    }
+    val historySuggestion by remember {
+        viewModel.searchSuggestions
+    }
 
-    val isOnSearch by viewModel.isSearch.collectAsState(initial = false)
+    // use in layout toggle button
+    val isLinear by remember {
+        viewModel.isLinear
+    }
+
+    // use in home pager view
+    val lazyPagerItems = LazyPagingContent(pagingFlow = viewModel.images)
+
+
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
@@ -64,20 +89,33 @@ fun HomeScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .fillMaxWidth()
-                    .wrapContentHeight()
+                    .wrapContentHeight(),
+                turnOnSearch = {},
+                historySuggestion = { historySuggestion },
+                getImageBySearch = { text -> viewModel.getImagesBySearch(text) },
+                showSearchSuggestion = { query -> viewModel.updateSearchHistorySuggestion(query) }
             )
-            LayoutToggleButton()
+            LayoutToggleButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                isLinear = isLinear,
+                toggleLayout = { viewModel.toggleLayout() }
+            )
             if (!isOnSearch) {
                 HomePagerView(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(contentPadding)
+                        .padding(contentPadding),
+                    images = lazyPagerItems,
+                    isLinear = isLinear
                 )
             } else {
                 LoadingView(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(contentPadding)
+                        .padding(contentPadding),
+                    turnOffSearch = {viewModel.turnOffSearch()}
                 )
             }
         }
@@ -89,59 +127,58 @@ fun HomeScreen(
 @Composable
 fun HomePagerView(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
-) {
-    val images = viewModel.images.collectAsLazyPagingItems()
+    images: LazyPagingItems<Hit>,
+    isLinear: Boolean
 
+) {
     // return a State object, not value. it will provide a getter to snapshot the current value.
-    val isLinear by viewModel.isLinear.collectAsState(initial = true)
-    val isOnSearch by viewModel.isSearch.collectAsState(initial = false)
     val widthByLayout = if (isLinear) 1f else 0.5f
 
-    if (isOnSearch) {
-        // show loading page
-        images.refresh()
-    } else {
-
-        if (isLinear) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(count = images.itemCount) {
-                    images[it]?.let { hit ->
-                        // show each image card
-                        SingleImageView(
-                            hit = hit,
-                            isLinear = isLinear,
-                            modifier = Modifier
-                                .fillMaxWidth(widthByLayout)
-                                .padding(all = 16.dp)
-                        )
-                    }
+    if (isLinear) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(count = images.itemCount) { index ->
+                images[index]?.let { hit ->
+                    SingleImageView(
+                        hit = hit,
+                        isLinear = isLinear,
+                        modifier = Modifier
+                            .fillMaxWidth(widthByLayout)
+                            .padding(all = 16.dp)
+                    )
                 }
             }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2)
-            ) {
-                items(count = images.itemCount) {
-                    images[it]?.let { hit ->
-                        // show each image card
-                        SingleImageView(
-                            hit = hit,
-                            isLinear = isLinear,
-                            modifier = Modifier
-                                .fillMaxWidth(widthByLayout)
-                                .padding(all = 16.dp)
-                        )
-                    }
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2)
+        ) {
+            items(count = images.itemCount) { index ->
+                images[index]?.let { hit ->
+                    // show each image card
+                    SingleImageView(
+                        hit = hit,
+                        isLinear = isLinear,
+                        modifier = Modifier
+                            .fillMaxWidth(widthByLayout)
+                            .padding(all = 16.dp)
+                    )
                 }
             }
         }
     }
-
 }
 
 @Composable
-fun LayoutToggleButton(viewModel: MainViewModel = hiltViewModel()) {
+fun LazyPagingContent(pagingFlow: MutableStateFlow<PagingData<Hit>>): LazyPagingItems<Hit>{
+    return pagingFlow.collectAsLazyPagingItems()
+}
+
+@Composable
+fun LayoutToggleButton(
+    modifier: Modifier = Modifier,
+    isLinear: Boolean,
+    toggleLayout: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -156,9 +193,9 @@ fun LayoutToggleButton(viewModel: MainViewModel = hiltViewModel()) {
             contentDescription = "linear layout icon"
         )
         Switch(
-            checked = viewModel.isLinear.collectAsState().value,
+            checked = isLinear,
             onCheckedChange = {
-                viewModel.toggleLayout()
+                toggleLayout()
             }
         )
 
@@ -171,13 +208,13 @@ fun LayoutToggleButton(viewModel: MainViewModel = hiltViewModel()) {
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel(),
+    turnOnSearch: () -> Unit,
+    historySuggestion: () -> List<String>,
+    getImageBySearch: (String) -> Unit,
+    showSearchSuggestion: (String) -> Unit,
 ) {
     var text by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
-
-
-    val suggestions = viewModel.searchSuggestions.collectAsState(initial = emptyList()).value
 
     Box(
         Modifier
@@ -196,13 +233,15 @@ private fun SearchBar(
             },
             onSearch = {
                 active = false
-                viewModel.turnOnSearch()
-                viewModel.getImagesBySearch(text)
+                turnOnSearch()
+                getImageBySearch(text)
             },
             active = active,
             onActiveChange = {
                 active = it
-                viewModel.updateSearchHistorySuggestion(text)
+                if (it) {
+                    showSearchSuggestion(text)
+                }
             },
             placeholder = { Text("Let's search images !") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
@@ -226,21 +265,20 @@ private fun SearchBar(
                     .padding(all = 16.dp)
                     .wrapContentHeight()
             ) {
-                items(suggestions.size) { index ->
+                items(historySuggestion().size) { index ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
                             .clickable {
-                                text = suggestions[index]
-                                viewModel.turnOnSearch()
-                                viewModel.getImagesBySearch(text)
-                                active = false
+                                text = historySuggestion()[index]
+                                turnOnSearch()
+                                getImageBySearch(text)
 
                             },
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = suggestions[index])
+                        Text(text = historySuggestion()[index])
                         Icon(
                             imageVector = Icons.Default.History,
                             contentDescription = "history icon"
