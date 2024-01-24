@@ -87,7 +87,7 @@ fun SingleImageView(
 }
 
 @Composable
-fun MainImageView(painter: Painter, modifier: Modifier = Modifier) {
+fun MainImageView( modifier: Modifier = Modifier, painter: Painter) {
 
     Image(
         painter = painter,
@@ -99,8 +99,9 @@ fun MainImageView(painter: Painter, modifier: Modifier = Modifier) {
 
 @Composable
 fun UserInfoView(
-    singleImage: Hit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    singleImage: Hit
+
 ) {
 
     val userPainter = rememberCoilPainter(
@@ -128,7 +129,7 @@ fun UserInfoView(
 }
 
 @Composable
-fun LimitedLineText(text: String, modifier: Modifier = Modifier) {
+fun LimitedLineText( modifier: Modifier = Modifier, text: String) {
     Text(
         text = text,
         modifier = modifier,
@@ -153,7 +154,7 @@ fun ActionRowView(singleImage: Hit, isLinear: Boolean, modifier: Modifier = Modi
 }
 
 @Composable
-fun LinearActionRow(singleImage: Hit, modifier: Modifier = Modifier){
+fun LinearActionRow( modifier: Modifier = Modifier, singleImage: Hit){
     Row(modifier = modifier) {
         NumberIconView(
             number = 100,
@@ -189,7 +190,7 @@ fun LinearActionRow(singleImage: Hit, modifier: Modifier = Modifier){
 }
 
 @Composable
-fun GridActionRow(singleImage: Hit, modifier: Modifier){
+fun GridActionRow(modifier: Modifier, singleImage: Hit){
     Row(modifier = modifier) {
 
         NumberIconView(

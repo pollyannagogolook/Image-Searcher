@@ -65,7 +65,7 @@ fun HomeScreen(
     }
 
     // use in home pager view
-    val lazyPagerItems = lazyPagingContent(pagingFlow = viewModel.images)
+    val lazyPagerItems = viewModel.images.collectAsLazyPagingItems()
 
 
     Scaffold(
@@ -93,7 +93,6 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                isLinear = isLinear,
                 toggleLayout = { viewModel.changeLayout() }
             )
             if (!isOnSearch) {
@@ -164,17 +163,16 @@ fun HomePagerView(
     }
 }
 
-@Composable
-private fun lazyPagingContent(pagingFlow: MutableStateFlow<PagingData<Hit>>): LazyPagingItems<Hit> {
-    return pagingFlow.collectAsLazyPagingItems()
-}
+
 
 @Composable
 fun LayoutToggleButton(
     modifier: Modifier = Modifier,
-    isLinear: Boolean,
-    toggleLayout: () -> Unit
+    toggleLayout: () -> Boolean
 ) {
+    var isLinear by remember {
+        mutableStateOf(true)
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -190,7 +188,7 @@ fun LayoutToggleButton(
         Switch(
             checked = isLinear,
             onCheckedChange = {
-                toggleLayout()
+                isLinear = toggleLayout()
             }
         )
 

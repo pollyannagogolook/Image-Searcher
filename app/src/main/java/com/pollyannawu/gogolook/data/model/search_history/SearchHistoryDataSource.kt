@@ -25,7 +25,7 @@ class SearchHistoryDataSource @Inject constructor(private val app: Application) 
     }
 
 
-    fun insetSearchHistory(query: String) {
+    fun insertSearchHistory(query: String) {
         val suggestions = SearchRecentSuggestions(
             app,
             SuggestionProvider.AUTHORITY,

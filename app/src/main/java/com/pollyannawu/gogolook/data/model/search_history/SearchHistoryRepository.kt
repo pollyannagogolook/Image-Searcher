@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class SearchHistoryRepository @Inject constructor(private val searchHistoryDataSource: SearchHistoryDataSource){
     fun insertSearchQuery(query: String){
-        searchHistoryDataSource.insetSearchHistory(query)
+        searchHistoryDataSource.insertSearchHistory(query)
 
     }
     fun getSearchHistorySuggestion(query: String): Cursor? {

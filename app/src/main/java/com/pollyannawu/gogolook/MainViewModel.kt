@@ -112,8 +112,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         repository.saveSearchQuery(query)
     }
 
-    fun changeLayout() {
+    fun changeLayout():Boolean {
         _isLinear.value = !_isLinear.value
+        return _isLinear.value
     }
 }
 
