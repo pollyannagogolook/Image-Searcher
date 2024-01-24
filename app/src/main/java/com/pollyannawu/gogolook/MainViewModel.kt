@@ -1,6 +1,7 @@
 package com.pollyannawu.gogolook
 
 import android.app.SearchManager
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.model.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,20 +29,22 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
 
 
-    var images = MutableStateFlow<PagingData<Hit>>(PagingData.empty())
     private val _images = MutableStateFlow<PagingData<Hit>>(PagingData.empty())
+    val images : StateFlow<PagingData<Hit>> = _images
 
-    var searchSuggestions = mutableStateOf<List<String>>(emptyList())
-    private set
+    private val _searchSuggestions = mutableStateOf<List<String>>(emptyList())
+    val searchSuggestions: State<List<String>> = _searchSuggestions
 
-    var isLinear = mutableStateOf<Boolean>(true)
-    private set
+    private val _isLinear = mutableStateOf<Boolean>(true)
+    val isLinear: State<Boolean> = _isLinear
 
-    var isSearch = mutableStateOf<Boolean>(true)
-    private set
 
-    var searchText = mutableStateOf<String>("")
-    private set
+    private val _isSearch = mutableStateOf<Boolean>(true)
+    val isSearch: State<Boolean> = _isSearch
+
+
+    private val _searchText = mutableStateOf<String>("")
+
 
     init {
         getDefaultLayoutByRemoteConfig()
@@ -51,7 +55,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         viewModelScope.launch {
             try {
                 repository.getImageBySearch("").cachedIn(viewModelScope).collect {
-                    images.value = it
+                    _images.value = it
                 }
 
             } catch (e: Exception) {
@@ -62,24 +66,23 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     fun turnOnSearch(){
-        isSearch.value = true
-//        _images.value = PagingData.empty()
+        _isSearch.value = true
     }
     fun turnOffSearch(){
-        isSearch.value = false
+        _isSearch.value = false
     }
 
     private fun getDefaultLayoutByRemoteConfig() {
         viewModelScope.launch {
-            isLinear.value = repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL) == LINEAR
+            _isLinear.value = repository.getDefaultLayoutByRemoteConfig(DEFAULT_LAYOUT_KEY, FAIL) == LINEAR
         }
     }
 
     fun getImagesBySearch(input: String) {
-        searchText.value = input
+        _searchText.value = input
         viewModelScope.launch {
             try {
-                images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
+                _images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
             } catch (e: Exception) {
               e.printStackTrace()
             }
@@ -101,7 +104,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
                 )
             }
         }
-        searchSuggestions.value = list
+        _searchSuggestions.value = list
 
     }
 
@@ -110,7 +113,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     fun changeLayout() {
-        isLinear.value = !isLinear.value
+        _isLinear.value = !_isLinear.value
     }
 }
 
