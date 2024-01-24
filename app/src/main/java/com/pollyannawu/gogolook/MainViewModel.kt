@@ -29,8 +29,8 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
 
 
-    private val _images = MutableStateFlow<PagingData<Hit>>(PagingData.empty())
-    val images : StateFlow<PagingData<Hit>> = _images
+    private val _pagingFlow = MutableStateFlow<PagingData<Hit>>(PagingData.empty())
+    val pagingFlow : StateFlow<PagingData<Hit>> = _pagingFlow
 
     private val _searchSuggestions = mutableStateOf<List<String>>(emptyList())
     val searchSuggestions: State<List<String>> = _searchSuggestions
@@ -55,7 +55,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         viewModelScope.launch {
             try {
                 repository.getImageBySearch("").cachedIn(viewModelScope).collect {
-                    _images.value = it
+                    _pagingFlow.value = it
                 }
 
             } catch (e: Exception) {
@@ -82,7 +82,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         _searchText.value = input
         viewModelScope.launch {
             try {
-                _images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
+                _pagingFlow.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
             } catch (e: Exception) {
               e.printStackTrace()
             }

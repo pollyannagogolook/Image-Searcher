@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,13 +36,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.pollyannawu.gogolook.MainViewModel
 import com.pollyannawu.gogolook.R
 import com.pollyannawu.gogolook.compose.loading.LoadingView
 import com.pollyannawu.gogolook.data.dataclass.Hit
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 
 
 @Composable
@@ -63,9 +61,6 @@ fun HomeScreen(
     val isLinear by remember {
         viewModel.isLinear
     }
-
-    // use in home pager view
-    val lazyPagerItems = viewModel.images.collectAsLazyPagingItems()
 
 
     Scaffold(
@@ -100,8 +95,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
-                    images = lazyPagerItems,
-                    isLinear = isLinear
+                    pagingFlow = { viewModel.pagingFlow },
+                    isLinear = { isLinear }
                 )
             } else {
                 LoadingView(
@@ -120,14 +115,19 @@ fun HomeScreen(
 @Composable
 fun HomePagerView(
     modifier: Modifier = Modifier,
-    images: LazyPagingItems<Hit>,
-    isLinear: Boolean
+    pagingFlow: () -> Flow<PagingData<Hit>>,
+    isLinear: () -> Boolean
 
 ) {
-    // return a State object, not value. it will provide a getter to snapshot the current value.
-    val widthByLayout = if (isLinear) 1f else 0.5f
+    val images = pagingFlow().collectAsLazyPagingItems()
 
-    if (isLinear) {
+
+    // return a State object, not value. it will provide a getter to snapshot the current value.
+    val widthByLayout = if (isLinear()) 1f else 0.5f
+
+
+
+    if (isLinear()) {
         LazyColumn(modifier = modifier) {
             items(count = images.itemCount) { index ->
                 images[index]?.let { hit ->
