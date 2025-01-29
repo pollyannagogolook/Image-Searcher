@@ -1,0 +1,13 @@
+name: Generate UML
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  generate-uml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pollyanna.wu-ggl/AutoUmlDrawer@v1.0.0
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
