@@ -2,6 +2,7 @@ name: Generate UML
 on:
   pull_request:
     types: [opened, synchronize]
+  workflow_dispatch:
 
 jobs:
   generate-uml:
