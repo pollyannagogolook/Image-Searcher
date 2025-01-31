@@ -12,7 +12,7 @@ interface Repository {
 
     fun getDefaultLayoutByRemoteConfig(key: String, fallback: String): String
 
-    fun updateSearchHistorySuggestion(query: String): Cursor?
+    fun getSearchHistorySuggestion(query: String): Cursor?
 
     fun saveSearchQuery(query: String)
 }
