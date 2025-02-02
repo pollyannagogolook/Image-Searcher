@@ -1,26 +1,18 @@
 package com.pollyannawu.gogolook
 
 import android.app.SearchManager
-import android.database.Cursor
-import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.pollyannawu.gogolook.data.dataclass.Hit
 import com.pollyannawu.gogolook.data.model.Repository
-import com.pollyannawu.gogolook.data.model.image_search.ITAG
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,35 +29,33 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
 
 
-    private val _images = MutableStateFlow<PagingData<Hit>?>(null)
-    val images: Flow<PagingData<Hit>>
-        get() = _images.filterNotNull()
+    private val _pagingFlow = MutableStateFlow<PagingData<Hit>>(PagingData.empty())
+    val pagingFlow : StateFlow<PagingData<Hit>> = _pagingFlow
+
+    private val _searchSuggestions = mutableStateOf<List<String>>(emptyList())
+    val searchSuggestions: State<List<String>> = _searchSuggestions
+
+    private val _isLinear = mutableStateOf<Boolean>(true)
+    val isLinear: State<Boolean> = _isLinear
 
 
-    private val _searchSuggestions = MutableStateFlow<List<String>>(emptyList())
-    val searchSuggestions: Flow<List<String>>
-        get() = _searchSuggestions.filterNotNull()
+    private val _isSearch = mutableStateOf<Boolean>(true)
+    val isSearch: State<Boolean> = _isSearch
 
-    private val _isLinear = MutableStateFlow<Boolean>(true)
-    val isLinear: StateFlow<Boolean> = _isLinear.asStateFlow()
 
-    private val _isSearch = MutableStateFlow<Boolean>(true)
-    val isSearch: StateFlow<Boolean> = _isSearch.asStateFlow()
+    private val _searchText = mutableStateOf<String>("")
 
-    private val _searchText = MutableStateFlow<String>("")
-    val searchText: StateFlow<String> = _searchText.asStateFlow()
 
     init {
         getDefaultLayoutByRemoteConfig()
         loadAllImage()
     }
 
-    fun loadAllImage() {
+    private fun loadAllImage() {
         viewModelScope.launch {
             try {
-
                 repository.getImageBySearch("").cachedIn(viewModelScope).collect {
-                    _images.value = it
+                    _pagingFlow.value = it
                 }
 
             } catch (e: Exception) {
@@ -77,7 +67,6 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun turnOnSearch(){
         _isSearch.value = true
-        _images.value = PagingData.empty()
     }
     fun turnOffSearch(){
         _isSearch.value = false
@@ -93,7 +82,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         _searchText.value = input
         viewModelScope.launch {
             try {
-                _images.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
+                _pagingFlow.value = repository.getImageBySearch(query = input).cachedIn(viewModelScope).first()
             } catch (e: Exception) {
               e.printStackTrace()
             }
@@ -101,12 +90,12 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
 
-    fun updateSearchHistorySuggestion(query: String) {
-        val searchHistoryCursor = repository.updateSearchHistorySuggestion(query)
+    fun getSearchHistorySuggestion(query: String) {
+        val searchHistoryCursor = repository.getSearchHistorySuggestion(query)
         val list = ArrayList<String>()
 
         // transfer cursor content to list
-        searchHistoryCursor?.let { cursor ->
+        searchHistoryCursor?.use { cursor ->
             while (cursor.moveToNext()) {
                 list.add(
                     cursor.getString(
@@ -123,8 +112,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         repository.saveSearchQuery(query)
     }
 
-    fun toggleLayout() {
+    fun changeLayout():Boolean {
         _isLinear.value = !_isLinear.value
+        return _isLinear.value
     }
 }
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -39,7 +38,7 @@ import com.pollyannawu.gogolook.data.dataclass.Hit
 
 
 @Composable
-fun SingleImageScreen(
+fun SingleImageView(
     modifier: Modifier = Modifier,
     hit: Hit,
     isLinear: Boolean = true
@@ -60,37 +59,49 @@ fun SingleImageScreen(
 
 
         Column {
-            UserInfoComposable(singleImage = singleImage)
-            MainImageComposable(mainImagePainter)
-            ActionRowComposable(
+            UserInfoView(
                 singleImage = singleImage,
-                isLinear = isLinear
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+
+            )
+            MainImageView(
+                painter = mainImagePainter,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
+            ActionRowView(
+                singleImage = singleImage,
+                isLinear = isLinear,
+                modifier = Modifier
+                    .padding(all = 16.dp)
+                    .fillMaxWidth()
+                    .wrapContentHeight()
             )
         }
     }
 }
 
 @Composable
-fun MainImageComposable(painter: Painter, modifier: Modifier = Modifier) {
+fun MainImageView( modifier: Modifier = Modifier, painter: Painter) {
 
     Image(
         painter = painter,
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .background(MaterialTheme.colorScheme.surface)
-            .paint(painterResource(id = R.drawable.gogolook))
-            .fillMaxWidth()
-            .aspectRatio(1f),
+        modifier = modifier.paint(painterResource(id = R.drawable.gogolook)),
         contentDescription = "image content",
         contentScale = ContentScale.Crop
-
     )
 }
 
 @Composable
-fun UserInfoComposable(
-    singleImage: Hit,
-    modifier: Modifier = Modifier
+fun UserInfoView(
+    modifier: Modifier = Modifier,
+    singleImage: Hit
+
 ) {
 
     val userPainter = rememberCoilPainter(
@@ -98,13 +109,13 @@ fun UserInfoComposable(
         fadeIn = true
     )
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         Image(
             painter = userPainter,
             modifier = Modifier
-                .padding(all = 8.dp)
                 .clip(CircleShape)
                 .fillMaxWidth(.15f)
                 .aspectRatio(1f)
@@ -113,76 +124,120 @@ fun UserInfoComposable(
             contentDescription = "user image",
             contentScale = ContentScale.Crop
         )
-        Text(
-            text = singleImage.user,
-            modifier = Modifier
-                .padding(start = 16.dp),
-            style = MaterialTheme.typography.titleMedium,
+        LimitedLineText(text = singleImage.user, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun LimitedLineText( modifier: Modifier = Modifier, text: String) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.titleMedium,
+        maxLines = 1
+    )
+}
+
+@Composable
+fun ActionRowView(singleImage: Hit, isLinear: Boolean, modifier: Modifier = Modifier) {
+    if (isLinear) {
+        LinearActionRow(
+            singleImage = singleImage,
+            modifier = modifier
+        )
+    } else {
+        GridActionRow(
+            singleImage = singleImage,
+            modifier = modifier
         )
     }
 }
 
 @Composable
-fun ActionRowComposable(singleImage: Hit, isLinear: Boolean) {
-    Row(
-        modifier = Modifier
-            .padding(all = 16.dp)
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        if (!isLinear) {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer before the first icon
-        }
+fun LinearActionRow( modifier: Modifier = Modifier, singleImage: Hit){
+    Row(modifier = modifier) {
+        NumberIconView(
+            number = 100,
+            iconId = R.drawable.like_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
 
-        NumberIconComposable(number = singleImage.likes, iconId = R.drawable.like_icon)
+        NumberIconView(
+            number = singleImage.downloads,
+            iconId = R.drawable.download_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
 
-        if (!isLinear) {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-        } else {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-            NumberIconComposable(number = singleImage.downloads, iconId = R.drawable.download_icon)
-            Spacer(modifier = Modifier.weight(1f)) // Spacer between the icons
-        }
+        NumberIconView(
+            number = singleImage.comments,
+            iconId = R.drawable.comment_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(modifier = Modifier.weight(1f))
 
-        NumberIconComposable(number = singleImage.comments, iconId = R.drawable.comment_icon)
-
-        if (!isLinear) {
-            Spacer(modifier = Modifier.weight(1f)) // Spacer after the last icon
-        } else {
-            Spacer(modifier = Modifier.weight(1f))
-            NumberIconComposable(number = singleImage.views, iconId = R.drawable.view_icon)
-        }
+        NumberIconView(
+            number = singleImage.views,
+            iconId = R.drawable.view_icon,
+            modifier = Modifier
+                .weight(1f)
+        )
     }
+}
+
+@Composable
+fun GridActionRow(modifier: Modifier, singleImage: Hit){
+    Row(modifier = modifier) {
+
+        NumberIconView(
+            number = singleImage.likes,
+            iconId = R.drawable.like_icon, modifier = Modifier
+                .weight(1f)
+                .padding(top = 8.dp)
+        )
+
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+
+        NumberIconView(number = singleImage.comments, iconId = R.drawable.comment_icon, modifier = Modifier
+            .weight(1f)
+            .padding(top = 8.dp))
+
+    }
+
 }
 
 
 @Composable
-fun NumberIconComposable(modifier: Modifier = Modifier, number: Int, iconId: Int) {
+fun NumberIconView(modifier: Modifier = Modifier, number: Int, iconId: Int) {
 
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val numberText = getNumberText(number)
         Text(
             text = numberText,
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(top = 8.dp),
             style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = "icon",
             modifier = Modifier
-                .fillMaxSize(0.1f)
+                .fillMaxSize(0.5f)
                 .padding(top = 8.dp)
         )
     }
 
 }
 
-fun getNumberText(number: Int): String {
+private fun getNumberText(number: Int): String {
     return if (number in 1000..999999) {
         val quotient = number / 1000
         val reminders = (number % 1000) / 100
@@ -199,7 +254,7 @@ fun getNumberText(number: Int): String {
 
 @Preview
 @Composable
-fun previewLinearImageScreen() {
+fun previewLinearImageView() {
 
     val fakeHit: Hit = Hit(
         id = 1,
@@ -226,5 +281,5 @@ fun previewLinearImageScreen() {
         userImageURL = "https://example.com/users/johndoe.jpg"
     )
 
-    SingleImageScreen(hit = fakeHit, isLinear = true)
+    SingleImageView(hit = fakeHit, isLinear = true)
 }

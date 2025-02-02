@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -18,19 +19,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pollyannawu.gogolook.MainViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoadingScreen(
+fun LoadingView(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
+    turnOffSearch: () -> Unit
 ) {
     var rotationState by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
-    val searchText = viewModel.searchText.collectAsState().value
+
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -44,11 +44,11 @@ fun LoadingScreen(
                 isLoading = false
             }
         }
-        viewModel.turnOffSearch()
+        turnOffSearch()
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
